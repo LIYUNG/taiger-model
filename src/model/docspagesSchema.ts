@@ -1,6 +1,6 @@
-import { Schema, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 
-export interface IDocspages extends Document {
+export interface IDocspages {
   name: string;
   title: string;
   category: string;
