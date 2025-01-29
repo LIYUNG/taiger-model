@@ -1,9 +1,15 @@
-npm publish
+npm publish package commands:
+
+# Cleanup
+npm run clean
 
 # Stage, commit, and push changes
 git add .
-git commit -m "fix: updated constants and improved utility functions"
+git commit -m "fix: your_commit"
 git push origin main
+
+# Run build
+npm run build
 
 # Bump version
 npm version patch    # or minor/major
