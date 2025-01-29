@@ -1,1 +1,1 @@
-export * from './auditSchema'
+export * from './docspagesSchema'
