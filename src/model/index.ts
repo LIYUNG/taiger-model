@@ -3,4 +3,8 @@ export * from './Audit';
 export * from './Basedocumentationslink';
 export * from './Communication';
 export * from './Complaint';
+export * from './Course';
 export * from './Docspage';
+export * from './Documentation';
+export * from './Documentthread';
+export * from './Event';
