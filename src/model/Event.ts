@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 
 // Define an interface for your event document
-interface IEvent {
+export interface IEvent {
   requester_id: string[];
   receiver_id: string[];
   isConfirmedRequester: boolean;
@@ -53,20 +53,7 @@ export const EventSchema = {
     min: [new Date(), "time can't be before now!!"]
   },
   end: {
-    type: Date,
+    type: Date
     // setting a min function to accept any date one hour ahead of start
-    min: [
-      function (this: IEvent): Date {
-        const date = new Date(this.start);
-        const validDate = new Date(date.getTime() + 60000);
-        return validDate;
-      },
-      'Event End must be at least one minute a head of event time'
-    ],
-    default: function (this: IEvent): Date {
-      const date = new Date(this.start);
-      const validDate = new Date(date.getTime() + 60000 * 30);
-      return validDate;
-    }
   }
 };
