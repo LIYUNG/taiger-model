@@ -38,6 +38,7 @@ export const EventSchema = {
   },
   description: {
     type: String,
+    required: [true, 'Please write a description for your event'],
     validate: {
       validator: function (value: string): boolean {
         return value.length <= 2000; // Maximum allowed length
@@ -48,6 +49,8 @@ export const EventSchema = {
   },
   start: {
     type: Date,
+    required: [true, 'Please Insert The Start of your event'],
+    min: [new Date(), "time can't be before now!!"]
   },
   end: {
     type: Date
