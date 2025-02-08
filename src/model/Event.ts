@@ -38,7 +38,6 @@ export const EventSchema = {
   },
   description: {
     type: String,
-    required: [true, 'Please write a description for your event'],
     validate: {
       validator: function (value: string): boolean {
         return value.length <= 2000; // Maximum allowed length
