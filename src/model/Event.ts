@@ -49,8 +49,6 @@ export const EventSchema = {
   },
   start: {
     type: Date,
-    required: [true, 'Please Insert The Start of your event'],
-    min: [new Date(), "time can't be before now!!"]
   },
   end: {
     type: Date
