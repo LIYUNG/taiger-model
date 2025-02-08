@@ -1,5 +1,3 @@
-import { Schema } from 'mongoose';
-
 export interface IDocspages {
   name: string;
   title: string;
@@ -11,7 +9,7 @@ export interface IDocspages {
   updatedAt: Date;
 }
 
-export const docspagesSchema = new Schema<IDocspages>({
+export const docspagesSchema = {
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },
@@ -20,4 +18,4 @@ export const docspagesSchema = new Schema<IDocspages>({
   text: { type: String, default: '' },
   country: { type: String, default: '' },
   updatedAt: { type: Date, default: Date.now }
-});
+};
