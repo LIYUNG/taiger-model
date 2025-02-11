@@ -70,7 +70,7 @@
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "mongoose": "^8.9.5"
   }
 }
