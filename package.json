@@ -75,7 +75,7 @@
     "mongoose": "^8.9.5"
   },
   "dependencies": {
-    "@taiger-common/core": "^1.0.8",
+    "@taiger-common/core": "^1.0.9",
     "validator": "^13.12.0"
   }
 }
