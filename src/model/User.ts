@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 import isEmail from 'validator/lib/isEmail';
-import { Role, DocumentStatusType } from '@taiger-common/core';
+import { DocumentStatusType } from '@taiger-common/core';
 
 import { PROGRAM_SUBJECT_KEYS } from './Program';
 const ManagerType = {
@@ -22,7 +22,7 @@ const attributeSchema = new Schema({
   }
 });
 
-const UserSchema = new Schema(
+const userSchema = new Schema(
   {
     firstname: {
       type: String,
@@ -363,10 +363,6 @@ const UserSchema = new Schema(
   options
 );
 
-const User = model('User', UserSchema);
-
-const Guest = User.discriminator('Guest', new Schema({}, options), Role.Guest);
-
 const applicationSchema = new Schema({
   programId: { type: Schema.Types.ObjectId, ref: 'Program' },
   uni_assist: {
@@ -439,288 +435,259 @@ const applicationSchema = new Schema({
   admission: { type: String, default: '-' }
 });
 
-const Student = User.discriminator(
-  'Student',
-  new Schema(
-    {
-      agents: [{ type: Schema.Types.ObjectId, ref: 'Agent' }],
-      editors: [{ type: Schema.Types.ObjectId, ref: 'Editor' }],
-      needEditor: { type: Boolean, default: false },
-      applications: [applicationSchema],
-      applying_program_count: {
-        type: Number,
-        default: 0
-      },
-      attributes: [
-        {
-          type: attributeSchema,
+const studentSchema = new Schema(
+  {
+    agents: [{ type: Schema.Types.ObjectId, ref: 'Agent' }],
+    editors: [{ type: Schema.Types.ObjectId, ref: 'Editor' }],
+    needEditor: { type: Boolean, default: false },
+    applications: [applicationSchema],
+    applying_program_count: {
+      type: Number,
+      default: 0
+    },
+    attributes: [
+      {
+        type: attributeSchema,
+        required: true
+      }
+    ],
+    profile: [
+      {
+        name: {
+          type: String,
           required: true
+        },
+        status: {
+          type: String,
+          enum: Object.values(DocumentStatusType),
+          default: DocumentStatusType.Missing
+        },
+        required: {
+          type: Boolean,
+          required: true
+        },
+        path: {
+          type: String,
+          default: ''
+        },
+        feedback: {
+          type: String,
+          default: ''
+        },
+        // TODO: updateBy
+        updatedAt: Date
+      }
+    ],
+    generaldocs_threads: [
+      {
+        isFinalVersion: {
+          type: Boolean,
+          default: false
+        },
+        latest_message_left_by_id: {
+          type: String,
+          default: ''
+        },
+        doc_thread_id: { type: Schema.Types.ObjectId, ref: 'Documentthread' },
+        updatedAt: Date,
+        createdAt: Date
+      }
+    ]
+  },
+  options
+);
+
+const externalSchema = new Schema(
+  {
+    attribute: {
+      can_update_program_list: {
+        type: Boolean,
+        default: false
+      },
+      can_update_course_analysis: {
+        type: Boolean,
+        default: false
+      },
+      can_add_articles: {
+        type: Boolean,
+        default: false
+      }
+    }
+  },
+  options
+);
+
+const managerSchema = new Schema(
+  {
+    agents: [{ type: Schema.Types.ObjectId, ref: 'Agent' }],
+    editors: [{ type: Schema.Types.ObjectId, ref: 'Editor' }],
+    manager_type: {
+      type: String,
+      enum: Object.values(ManagerType),
+      default: ManagerType.None
+    },
+    manager_notification: {
+      isRead_new_base_docs_uploaded: [
+        {
+          student_id: {
+            type: String,
+            default: ''
+          }
         }
       ],
-      profile: [
+      isRead_new_programs_assigned: {
+        type: Boolean,
+        default: false
+      }
+    },
+    attribute: {
+      can_write_ml: {
+        type: Boolean,
+        default: false
+      },
+      can_write_rl: {
+        type: Boolean,
+        default: false
+      },
+      can_write_cv: {
+        type: Boolean,
+        default: false
+      },
+      can_write_essay: {
+        type: Boolean,
+        default: false
+      },
+      can_do_interview: {
+        type: Boolean,
+        default: false
+      }
+    }
+  },
+  options
+);
+
+const agentSchema = new Schema(
+  {
+    timezone: { type: String, default: '' },
+    officehours: {
+      Monday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Tuesday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Wednesday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Thursday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Friday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Saturday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Sunday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      }
+    },
+    selfIntroduction: {
+      type: String,
+      default: ''
+    },
+    agent_notification: {
+      isRead_new_base_docs_uploaded: [
         {
-          name: {
-            type: String,
-            required: true
-          },
-          status: {
-            type: String,
-            enum: Object.values(DocumentStatusType),
-            default: DocumentStatusType.Missing
-          },
-          required: {
-            type: Boolean,
-            required: true
-          },
-          path: {
+          student_id: {
             type: String,
             default: ''
           },
-          feedback: {
+          student_firstname: {
             type: String,
             default: ''
           },
-          // TODO: updateBy
-          updatedAt: Date
+          student_lastname: {
+            type: String,
+            default: ''
+          }
         }
       ],
-      generaldocs_threads: [
-        {
-          isFinalVersion: {
-            type: Boolean,
-            default: false
-          },
-          latest_message_left_by_id: {
-            type: String,
-            default: ''
-          },
-          doc_thread_id: { type: Schema.Types.ObjectId, ref: 'Documentthread' },
-          updatedAt: Date,
-          createdAt: Date
-        }
-      ]
-    },
-    options
-  ),
-  Role.Student
+      isRead_new_survey_updated: {
+        type: Boolean,
+        default: true
+      },
+      isRead_applications_status_changed: {
+        type: Boolean,
+        default: true
+      },
+      isRead_new_programs_assigned: {
+        type: Boolean,
+        default: false
+      }
+    }
+  },
+  options
 );
 
-const External = User.discriminator(
-  'External',
-  new Schema(
-    {
-      attribute: {
-        can_update_program_list: {
-          type: Boolean,
-          default: false
-        },
-        can_update_course_analysis: {
-          type: Boolean,
-          default: false
-        },
-        can_add_articles: {
-          type: Boolean,
-          default: false
-        }
+const editorSchema = new Schema(
+  {
+    editor_notification: {
+      isRead_survey_not_complete: {
+        type: Boolean,
+        default: false
+      },
+      isRead_base_documents_missing: {
+        type: Boolean,
+        default: false
+      },
+      isRead_base_documents_rejected: {
+        type: Boolean,
+        default: false
+      },
+      isRead_new_programs_assigned: {
+        type: Boolean,
+        default: false
       }
     },
-    options
-  ),
-  Role.External
-);
-
-const Manager = User.discriminator(
-  'Manager',
-  new Schema(
-    {
-      agents: [{ type: Schema.Types.ObjectId, ref: 'Agent' }],
-      editors: [{ type: Schema.Types.ObjectId, ref: 'Editor' }],
-      manager_type: {
-        type: String,
-        enum: Object.values(ManagerType),
-        default: ManagerType.None
+    attribute: {
+      can_write_ml: {
+        type: Boolean,
+        default: false
       },
-      manager_notification: {
-        isRead_new_base_docs_uploaded: [
-          {
-            student_id: {
-              type: String,
-              default: ''
-            }
-          }
-        ],
-        isRead_new_programs_assigned: {
-          type: Boolean,
-          default: false
-        }
+      can_write_rl: {
+        type: Boolean,
+        default: false
       },
-      attribute: {
-        can_write_ml: {
-          type: Boolean,
-          default: false
-        },
-        can_write_rl: {
-          type: Boolean,
-          default: false
-        },
-        can_write_cv: {
-          type: Boolean,
-          default: false
-        },
-        can_write_essay: {
-          type: Boolean,
-          default: false
-        },
-        can_do_interview: {
-          type: Boolean,
-          default: false
-        }
+      can_write_cv: {
+        type: Boolean,
+        default: false
+      },
+      can_write_essay: {
+        type: Boolean,
+        default: false
+      },
+      can_do_interview: {
+        type: Boolean,
+        default: false
       }
-    },
-    options
-  ),
-  Role.Manager
-);
-
-const Agent = User.discriminator(
-  'Agent',
-  new Schema(
-    {
-      timezone: { type: String, default: '' },
-      officehours: {
-        Monday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        },
-        Tuesday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        },
-        Wednesday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        },
-        Thursday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        },
-        Friday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        },
-        Saturday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        },
-        Sunday: {
-          active: { type: Boolean, default: false },
-          time_slots: [{ type: Object }]
-        }
-      },
-      selfIntroduction: {
-        type: String,
-        default: ''
-      },
-      agent_notification: {
-        isRead_new_base_docs_uploaded: [
-          {
-            student_id: {
-              type: String,
-              default: ''
-            },
-            student_firstname: {
-              type: String,
-              default: ''
-            },
-            student_lastname: {
-              type: String,
-              default: ''
-            }
-          }
-        ],
-        isRead_new_survey_updated: {
-          type: Boolean,
-          default: true
-        },
-        isRead_applications_status_changed: {
-          type: Boolean,
-          default: true
-        },
-        isRead_new_programs_assigned: {
-          type: Boolean,
-          default: false
-        }
-      }
-    },
-    options
-  ),
-  Role.Agent
-);
-
-const Editor = User.discriminator(
-  'Editor',
-  new Schema(
-    {
-      editor_notification: {
-        isRead_survey_not_complete: {
-          type: Boolean,
-          default: false
-        },
-        isRead_base_documents_missing: {
-          type: Boolean,
-          default: false
-        },
-        isRead_base_documents_rejected: {
-          type: Boolean,
-          default: false
-        },
-        isRead_new_programs_assigned: {
-          type: Boolean,
-          default: false
-        }
-      },
-      attribute: {
-        can_write_ml: {
-          type: Boolean,
-          default: false
-        },
-        can_write_rl: {
-          type: Boolean,
-          default: false
-        },
-        can_write_cv: {
-          type: Boolean,
-          default: false
-        },
-        can_write_essay: {
-          type: Boolean,
-          default: false
-        },
-        can_do_interview: {
-          type: Boolean,
-          default: false
-        }
-      }
-    },
-    options
-  ),
-  Role.Editor
-);
-
-export const Admin = User.discriminator(
-  'Admin',
-  new Schema({}, options),
-  Role.Admin
+    }
+  },
+  options
 );
 
 module.exports = {
-  User,
-  UserSchema,
-  Guest,
-  Student,
-  Agent,
-  External,
-  Editor,
-  Manager,
-  Admin
+  userSchema,
+  studentSchema,
+  agentSchema,
+  externalSchema,
+  editorSchema,
+  managerSchema
 };
