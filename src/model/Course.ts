@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export const coursesSchema = {
+export const coursesSchema = new Schema({
   student_id: { type: Schema.Types.ObjectId, ref: 'User' },
   name: { type: String, default: '' },
   table_data_string: { type: String, default: '' },
@@ -20,4 +20,4 @@ export const coursesSchema = {
     updatedAtV2: Date,
     updatedAt: Date
   }
-};
+});

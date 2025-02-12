@@ -1,4 +1,6 @@
-export const documentationsSchema = {
+import { Schema } from 'mongoose';
+
+export const documentationsSchema = new Schema({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },
@@ -7,4 +9,4 @@ export const documentationsSchema = {
   text: { type: String, default: '' },
   country: { type: String, default: '' },
   updatedAt: Date
-};
+});

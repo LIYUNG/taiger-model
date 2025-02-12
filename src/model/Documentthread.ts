@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export const documentThreadsSchema = {
+export const documentThreadsSchema = new Schema({
   student_id: { type: Schema.Types.ObjectId, require: true, ref: 'User' },
   program_id: { type: Schema.Types.ObjectId, ref: 'Program' },
   outsourced_user_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],
@@ -40,4 +40,4 @@ export const documentThreadsSchema = {
     }
   ],
   updatedAt: Date
-};
+});
