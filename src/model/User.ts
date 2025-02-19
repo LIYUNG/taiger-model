@@ -684,6 +684,7 @@ const editorSchema = new Schema(
 );
 
 module.exports = {
+  attributeSchema,
   userSchema,
   studentSchema,
   agentSchema,
