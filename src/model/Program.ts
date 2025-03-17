@@ -163,10 +163,13 @@ export const programModule = {
     type: Boolean,
     default: false
   },
+  goetheZertifikat: {
+    type: String
+  },
   testdaf: {
     type: String
   },
-  basic_german_requirement: {
+  dsh: {
     type: String
   },
   gre: {
