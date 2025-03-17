@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import {
+  DIFFICULTY,
   PROGRAM_SUBJECTS,
   SCHOOL_TAGS,
   SCHOOL_TYPES
@@ -9,11 +10,6 @@ const { ObjectId } = Schema.Types;
 
 const SCHOOL_TAG_KEYS = Object.keys(SCHOOL_TAGS);
 export const PROGRAM_SUBJECT_KEYS = Object.keys(PROGRAM_SUBJECTS);
-export declare const DIFFICULTY: {
-  EASY: 'EASY';
-  MEDIUM: 'MEDIUM';
-  HARD: 'HARD';
-};
 export const DIFFICULTY_KEYS = Object.keys(DIFFICULTY);
 
 // export type ProgramModule = {
