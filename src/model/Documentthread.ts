@@ -39,5 +39,9 @@ export const documentThreadsSchema = new Schema({
       ignore_message: Boolean
     }
   ],
+  isEssayConsultantNeeded: {
+    type: Boolean
+  },
+  essayConsultantIds: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   updatedAt: Date
 });
