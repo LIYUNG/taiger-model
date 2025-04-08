@@ -292,6 +292,10 @@ export const programModule = {
     type: String,
     enum: SCHOOL_TYPES
   },
+  isEssayConsultantNeeded: {
+    type: Boolean,
+    default: false
+  },
   tags: [
     {
       type: String,
