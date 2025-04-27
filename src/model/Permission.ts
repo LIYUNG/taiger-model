@@ -39,6 +39,14 @@ export const permissionSchema = new Schema(
       type: Boolean,
       default: false
     },
+    canAddUser: {
+      type: Boolean,
+      default: false
+    },
+    canModifyUser: {
+      type: Boolean,
+      default: false
+    },
     isEssayWriters: {
       type: Boolean,
       default: false
