@@ -11,10 +11,6 @@ export const interviewsSchema = new Schema(
       type: String,
       default: ''
     },
-    status: {
-      type: String,
-      default: 'Unscheduled'
-    },
     interviewer: {
       type: String,
       default: ''
