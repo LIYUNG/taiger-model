@@ -19,3 +19,6 @@ git push origin main --tags
 
 # Publish to npm
 npm publish
+
+# Concat command for powershell (please modify the commit message)
+git add .; git commit -m "fix: add application_year"; git push origin main; npm run build; npm version patch; git push origin main --tags; npm publish

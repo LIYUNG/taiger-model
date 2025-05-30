@@ -432,7 +432,8 @@ const applicationSchema = new Schema({
   finalEnrolment: { type: Boolean, default: false },
   decided: { type: String, default: '-' },
   closed: { type: String, default: '-' },
-  admission: { type: String, default: '-' }
+  admission: { type: String, default: '-' },
+  application_year: { type: String, default: '' }
 });
 
 const studentSchema = new Schema(
