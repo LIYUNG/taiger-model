@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 
 export const applicationSchema = new Schema({
   programId: { type: Schema.Types.ObjectId, ref: 'Program' },
+  studentId: { type: Schema.Types.ObjectId, ref: 'User' },
   uni_assist: {
     status: {
       type: String,
