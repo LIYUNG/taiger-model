@@ -21,4 +21,4 @@ git push origin main --tags
 npm publish
 
 # Concat command for powershell (please modify the commit message)
-git add .; git commit -m "fix: copy applications to new collection"; git push origin main; npm run build; npm version patch; git push origin main --tags; npm publish
+git add .; git commit -m "fix: remove applications in students"; git push origin main; npm run build; npm version patch; git push origin main --tags; npm publish
