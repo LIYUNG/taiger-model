@@ -46,6 +46,9 @@ const userSchema = new Schema(
       lowercase: true,
       validate: [isEmail, 'Invalid email address']
     },
+    pictureUrl: {
+      type: String
+    },
     password: {
       type: String,
       select: false,
