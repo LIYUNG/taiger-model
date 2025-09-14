@@ -12,79 +12,6 @@ const SCHOOL_TAG_KEYS = Object.keys(SCHOOL_TAGS);
 export const PROGRAM_SUBJECT_KEYS = Object.keys(PROGRAM_SUBJECTS);
 export const DIFFICULTY_KEYS = Object.keys(DIFFICULTY);
 
-// export type ProgramModule = {
-//   [key: string]: any; // Allows dynamic key access
-// } & {
-//   isArchiv: boolean;
-//   school: string;
-//   program_name: string;
-//   programSubjects: string[];
-//   degree?: string;
-//   semester?: string;
-//   lang?: string;
-//   gpa_requirement?: string;
-//   allowOnlyGraduatedApplicant?: boolean;
-//   application_start?: string;
-//   application_deadline?: string;
-//   uni_assist?: string;
-//   englishTestHandLater?: boolean;
-//   toefl?: string;
-//   toefl_reading?: number;
-//   toefl_listening?: number;
-//   toefl_writing?: number;
-//   toefl_speaking?: number;
-//   ielts?: string;
-//   ielts_reading?: number;
-//   ielts_listening?: number;
-//   ielts_writing?: number;
-//   ielts_speaking?: number;
-//   germanTestHandLater?: boolean;
-//   testdaf?: string;
-//   basic_german_requirement?: string;
-//   gre?: string;
-//   gre_verbal?: number;
-//   gre_quantitative?: number;
-//   gre_analytical_writing?: number;
-//   gmat?: string;
-//   ml_required?: string;
-//   ml_requirements?: string;
-//   rl_required?: string;
-//   rl_requirements?: string;
-//   is_rl_specific?: boolean;
-//   essay_required?: string;
-//   essay_requirements?: string;
-//   portfolio_required?: string;
-//   portfolio_requirements?: string;
-//   supplementary_form_required?: string;
-//   supplementary_form_requirements?: string;
-//   curriculum_analysis_required?: string;
-//   curriculum_analysis_requirements?: string;
-//   scholarship_form_required?: string;
-//   scholarship_form_requirements?: string;
-//   module_description_required?: string;
-//   ects_requirements?: string;
-//   special_notes?: string;
-//   comments?: string;
-//   application_portal_a?: string;
-//   application_portal_b?: string;
-//   application_portal_a_instructions?: string;
-//   application_portal_b_instructions?: string;
-//   uni_assist_link?: string;
-//   website?: string;
-//   fpso?: string;
-//   updatedAt?: Date;
-//   whoupdated?: string;
-//   tuition_fees?: string;
-//   contact?: string;
-//   country?: string;
-//   isPrivateSchool?: boolean;
-//   isPartnerSchool?: boolean;
-//   schoolType?: string;
-//   tags?: string[];
-//   url?: string;
-//   vcId?: ObjectId;
-// };
-
 export const programModule = {
   isArchiv: Boolean,
   school: {
@@ -279,6 +206,10 @@ export const programModule = {
   contact: {
     type: String
   },
+  city: {
+    type: String,
+    default: ''
+  },
   country: {
     type: String
   },
@@ -303,6 +234,14 @@ export const programModule = {
     }
   ],
   url: String,
+  isNC: {
+    type: Boolean,
+    default: false
+  },
+  zipCode: {
+    type: String,
+    default: ''
+  },
   vcId: ObjectId
 };
 
