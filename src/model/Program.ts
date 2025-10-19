@@ -120,10 +120,18 @@ export const programModule = {
   ml_requirements: {
     type: String
   },
+  // statement of purpose
   sop_required: {
     type: String
   },
   sop_requirements: {
+    type: String
+  },
+  // personal history of statement
+  phs_required: {
+    type: String
+  },
+  phs_requirements: {
     type: String
   },
   rl_required: {
