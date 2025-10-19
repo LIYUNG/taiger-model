@@ -120,6 +120,12 @@ export const programModule = {
   ml_requirements: {
     type: String
   },
+  sop_required: {
+    type: String
+  },
+  sop_requirements: {
+    type: String
+  },
   rl_required: {
     type: String
   },
