@@ -1,6 +1,6 @@
 {
   "name": "@taiger-common/model",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "description": "TaiGer core package",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
