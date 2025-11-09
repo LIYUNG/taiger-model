@@ -14,7 +14,7 @@ export const DIFFICULTY_KEYS = Object.keys(DIFFICULTY);
 
 export const programModule = {
   isArchiv: Boolean,
-  isTaskAccessLocked: {
+  isLocked: {
     type: Boolean,
     default: false
   },
