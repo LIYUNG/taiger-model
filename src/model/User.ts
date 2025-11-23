@@ -571,6 +571,7 @@ const agentSchema = new Schema(
 
 const editorSchema = new Schema(
   {
+    timezone: { type: String, default: '' },
     officehours: { type: officehoursSchema, default: {} },
     editor_notification: {
       isRead_survey_not_complete: {
