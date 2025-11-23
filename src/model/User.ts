@@ -533,7 +533,7 @@ const officehoursSchema = new Schema(
 const agentSchema = new Schema(
   {
     timezone: { type: String, default: '' },
-    officehours: { type: officehoursSchema, default: {} },
+    officehours: officehoursSchema,
     selfIntroduction: {
       type: String,
       default: ''
@@ -575,7 +575,7 @@ const agentSchema = new Schema(
 const editorSchema = new Schema(
   {
     timezone: { type: String, default: '' },
-    officehours: { type: officehoursSchema, default: {} },
+    officehours: officehoursSchema,
     editor_notification: {
       isRead_survey_not_complete: {
         type: Boolean,
