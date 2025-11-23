@@ -496,36 +496,39 @@ const managerSchema = new Schema(
   options
 );
 
-const officehoursSchema = new Schema({
-  Monday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
+const officehoursSchema = new Schema(
+  {
+    Monday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    },
+    Tuesday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    },
+    Wednesday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    },
+    Thursday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    },
+    Friday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    },
+    Saturday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    },
+    Sunday: {
+      active: { type: Boolean, default: false },
+      time_slots: [{ type: Object }]
+    }
   },
-  Tuesday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Wednesday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Thursday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Friday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Saturday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Sunday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  }
-});
+  { _id: false }
+);
 
 const agentSchema = new Schema(
   {
