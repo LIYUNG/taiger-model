@@ -495,41 +495,40 @@ const managerSchema = new Schema(
   },
   options
 );
-const officehours = {
-  Monday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Tuesday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Wednesday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Thursday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Friday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Saturday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  },
-  Sunday: {
-    active: { type: Boolean, default: false },
-    time_slots: [{ type: Object }]
-  }
-};
 
 const agentSchema = new Schema(
   {
     timezone: { type: String, default: '' },
-    officehours: officehours,
+    officehours: {
+      Monday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Tuesday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Wednesday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Thursday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Friday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Saturday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Sunday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      }
+    },
     selfIntroduction: {
       type: String,
       default: ''
@@ -571,7 +570,36 @@ const agentSchema = new Schema(
 const editorSchema = new Schema(
   {
     timezone: { type: String, default: '' },
-    officehours: officehours,
+    officehours: {
+      Monday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Tuesday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Wednesday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Thursday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Friday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Saturday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      },
+      Sunday: {
+        active: { type: Boolean, default: false },
+        time_slots: [{ type: Object }]
+      }
+    },
     editor_notification: {
       isRead_survey_not_complete: {
         type: Boolean,
