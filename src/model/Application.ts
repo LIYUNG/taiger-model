@@ -72,5 +72,5 @@ export const applicationSchema = new Schema({
   closed: { type: String, default: '-' },
   admission: { type: String, default: '-' },
   application_year: { type: String, default: '' },
-  isLocked: { type: Boolean, default: true }
+  isLocked: { type: Boolean, default: false }
 });
