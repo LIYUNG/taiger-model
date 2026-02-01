@@ -96,10 +96,6 @@ export interface IProgram {
 
 export const programModule = {
   isArchiv: Boolean,
-  isLocked: {
-    type: Boolean,
-    default: false
-  },
   school: {
     type: String,
     default: '',

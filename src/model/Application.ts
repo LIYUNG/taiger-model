@@ -115,5 +115,6 @@ export const applicationSchema = new Schema<IApplication>({
   decided: { type: String, default: '-' },
   closed: { type: String, default: '-' },
   admission: { type: String, default: '-' },
-  application_year: { type: String, default: '' }
+  application_year: { type: String, default: '' },
+  isLocked: { type: Boolean, default: false }
 });
