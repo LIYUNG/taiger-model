@@ -1,6 +1,17 @@
 import { Schema } from 'mongoose';
 
-export const intervalSchema = new Schema({
+export interface IInterval {
+  thread_id?: Schema.Types.ObjectId;
+  student_id?: Schema.Types.ObjectId;
+  message_1_id: Schema.Types.ObjectId;
+  message_2_id: Schema.Types.ObjectId;
+  interval_type: string;
+  interval: number;
+  intervalStartAt: Date;
+  updatedAt?: Date;
+}
+
+export const intervalSchema = new Schema<IInterval>({
   thread_id: {
     type: Schema.Types.ObjectId,
     ref: 'Documentthread'

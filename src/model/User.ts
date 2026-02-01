@@ -3,6 +3,224 @@ import isEmail from 'validator/lib/isEmail';
 import { DocumentStatusType } from '@taiger-common/core';
 
 import { PROGRAM_SUBJECT_KEYS } from './Program';
+
+// --- Interfaces for frontend/backend type reference ---
+
+export interface IUserNotification {
+  isRead_survey_not_complete?: boolean;
+  isRead_uni_assist_task_assigned?: boolean;
+  isRead_new_agent_assigned?: boolean;
+  isRead_new_editor_assigned?: boolean;
+  isRead_new_cvmlrl_tasks_created?: boolean;
+  isRead_new_cvmlrl_messsage?: boolean;
+  isRead_base_documents_missing?: boolean;
+  isRead_base_documents_rejected?: boolean;
+  isRead_new_programs_assigned?: boolean;
+}
+
+export interface IUserTaigeraiFile {
+  name?: string;
+  status?: string;
+  file_category?: string;
+  path?: string;
+  updatedAt?: Date;
+}
+
+export interface IUserTaigeraiFeedback {
+  message?: string;
+  updatedAt?: Date;
+}
+
+export interface IUserTaigerai {
+  input?: IUserTaigeraiFile;
+  output?: IUserTaigeraiFile;
+  feedback?: IUserTaigeraiFeedback;
+}
+
+export interface IUserApplicationPreference {
+  expected_application_date?: string;
+  expected_application_semester?: string;
+  target_program_language?: string;
+  target_application_field?: string;
+  targetApplicationSubjects?: string[];
+  target_degree?: string;
+  considered_privat_universities?: string;
+  special_wished?: string;
+  application_outside_germany?: string;
+  updatedAt?: Date;
+}
+
+export interface IUserAcademicBackgroundUniversity {
+  high_school_isGraduated?: string;
+  attended_high_school?: string;
+  high_school_graduated_year?: string;
+  attended_university?: string;
+  attended_university_program?: string;
+  isGraduated?: string;
+  expected_grad_date?: string;
+  Highest_GPA_Uni?: number;
+  Passing_GPA_Uni?: number;
+  My_GPA_Uni?: number;
+  Has_Exchange_Experience?: string;
+  isSecondGraduated?: string;
+  expectedSecondDegreeGradDate?: string;
+  attendedSecondDegreeUniversity?: string;
+  attendedSecondDegreeProgram?: string;
+  highestSecondDegreeGPA?: number;
+  passingSecondDegreeGPA?: number;
+  mySecondDegreeGPA?: number;
+  Has_Internship_Experience?: string;
+  Has_Working_Experience?: string;
+  updatedAt?: Date;
+}
+
+export interface IUserAcademicBackgroundLanguage {
+  english_isPassed?: string;
+  english_certificate?: string;
+  english_score?: string;
+  english_score_reading?: string;
+  english_score_listening?: string;
+  english_score_writing?: string;
+  english_score_speaking?: string;
+  english_test_date?: string;
+  german_isPassed?: string;
+  german_certificate?: string;
+  german_score?: string;
+  german_test_date?: string;
+  gre_isPassed?: string;
+  gre_certificate?: string;
+  gre_score?: string;
+  gre_test_date?: string;
+  gmat_isPassed?: string;
+  gmat_certificate?: string;
+  gmat_score?: string;
+  gmat_test_date?: string;
+  updatedAt?: Date;
+}
+
+export interface IUserAcademicBackground {
+  university?: IUserAcademicBackgroundUniversity;
+  language?: IUserAcademicBackgroundLanguage;
+}
+
+export interface IUserAttribute {
+  value: number;
+  name: string;
+}
+
+export interface IUser {
+  firstname?: string;
+  firstname_chinese?: string;
+  lastname?: string;
+  lastname_chinese?: string;
+  email?: string;
+  pictureUrl?: string;
+  password?: string;
+  archiv?: boolean;
+  birthday?: string;
+  linkedIn?: string;
+  lineId?: string;
+  isAccountActivated?: boolean;
+  notification?: IUserNotification;
+  taigerai?: IUserTaigerai;
+  application_preference?: IUserApplicationPreference;
+  academic_background?: IUserAcademicBackground;
+  lastLoginAt?: Date;
+}
+
+export interface IUserProfileItem {
+  name: string;
+  status?: string;
+  required: boolean;
+  path?: string;
+  feedback?: string;
+  updatedAt?: Date;
+}
+
+export interface IUserGeneraldocsThread {
+  isFinalVersion?: boolean;
+  latest_message_left_by_id?: string;
+  doc_thread_id?: Schema.Types.ObjectId;
+  updatedAt?: Date;
+  createdAt?: Date;
+}
+
+export interface IStudent extends IUser {
+  agents?: Schema.Types.ObjectId[];
+  editors?: Schema.Types.ObjectId[];
+  needEditor?: boolean;
+  applying_program_count?: number;
+  attributes?: IUserAttribute[];
+  profile?: IUserProfileItem[];
+  generaldocs_threads?: IUserGeneraldocsThread[];
+}
+
+export interface IUserOfficeHoursDay {
+  active?: boolean;
+  time_slots?: unknown[];
+}
+
+export interface IAgentNotificationItem {
+  student_id?: string;
+  student_firstname?: string;
+  student_lastname?: string;
+}
+
+export interface IAgent extends IUser {
+  timezone?: string;
+  officehours?: Record<string, IUserOfficeHoursDay>;
+  selfIntroduction?: string;
+  agent_notification?: {
+    isRead_new_base_docs_uploaded?: IAgentNotificationItem[];
+    isRead_new_survey_updated?: boolean;
+    isRead_applications_status_changed?: boolean;
+    isRead_new_programs_assigned?: boolean;
+  };
+}
+
+export interface IEditor extends IUser {
+  timezone?: string;
+  officehours?: Record<string, IUserOfficeHoursDay>;
+  editor_notification?: {
+    isRead_survey_not_complete?: boolean;
+    isRead_base_documents_missing?: boolean;
+    isRead_base_documents_rejected?: boolean;
+    isRead_new_programs_assigned?: boolean;
+  };
+  attribute?: {
+    can_write_ml?: boolean;
+    can_write_rl?: boolean;
+    can_write_cv?: boolean;
+    can_write_essay?: boolean;
+    can_do_interview?: boolean;
+  };
+}
+
+export interface IManager extends IUser {
+  agents?: Schema.Types.ObjectId[];
+  editors?: Schema.Types.ObjectId[];
+  manager_type?: string;
+  manager_notification?: {
+    isRead_new_base_docs_uploaded?: { student_id?: string }[];
+    isRead_new_programs_assigned?: boolean;
+  };
+  attribute?: {
+    can_write_ml?: boolean;
+    can_write_rl?: boolean;
+    can_write_cv?: boolean;
+    can_write_essay?: boolean;
+    can_do_interview?: boolean;
+  };
+}
+
+export interface IExternal extends IUser {
+  attribute?: {
+    can_update_program_list?: boolean;
+    can_update_course_analysis?: boolean;
+    can_add_articles?: boolean;
+  };
+}
+
 const ManagerType = {
   Agent: 'Agent',
   Editor: 'Editor',

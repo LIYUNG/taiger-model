@@ -8,7 +8,26 @@ const STUDENT_INPUT_STATUS_E = {
   BLOCKED: 'blocked'
 };
 
-export const surveyInputSchema = new Schema({
+export interface ISurveyInputSurveyContent {
+  questionId?: string;
+  question?: string;
+  answer?: string;
+  type?: 'word' | 'sentence' | 'paragraph' | 'essay';
+  contentType?: string;
+}
+
+export interface ISurveyInput {
+  studentId: Schema.Types.ObjectId;
+  programId?: Schema.Types.ObjectId;
+  fileType: string;
+  isFinalVersion?: boolean;
+  surveyContent?: ISurveyInputSurveyContent[];
+  surveyStatus?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export const surveyInputSchema = new Schema<ISurveyInput>({
   studentId: {
     type: Schema.Types.ObjectId,
     immutable: true,

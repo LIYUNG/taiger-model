@@ -1,6 +1,13 @@
 import { Schema } from 'mongoose';
 
-export const templatesSchema = new Schema({
+export interface ITemplate {
+  name: string;
+  category_name: string;
+  path: string;
+  updatedAt?: Date;
+}
+
+export const templatesSchema = new Schema<ITemplate>({
   name: {
     type: String,
     required: true

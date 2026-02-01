@@ -1,6 +1,50 @@
 import { Schema } from 'mongoose';
 
-export const applicationSchema = new Schema({
+export interface IApplicationUniAssist {
+  status?: string;
+  vpd_file_path?: string;
+  vpd_paid_confirmation_file_path?: string;
+  vpd_paid_confirmation_file_status?: string;
+  isPaid?: boolean;
+  updatedAt?: Date;
+}
+
+export interface IApplicationPortalCredentials {
+  application_portal_a?: { account?: string; password?: string };
+  application_portal_b?: { account?: string; password?: string };
+}
+
+export interface IApplicationDocModificationThreadItem {
+  isFinalVersion?: boolean;
+  latest_message_left_by_id?: string;
+  doc_thread_id?: Schema.Types.ObjectId;
+  updatedAt?: Date;
+  createdAt?: Date;
+}
+
+export interface IApplicationAdmissionLetter {
+  status?: string;
+  admission_file_path?: string;
+  comments?: string;
+  updatedAt?: Date;
+}
+
+export interface IApplication {
+  programId?: Schema.Types.ObjectId;
+  studentId?: Schema.Types.ObjectId;
+  uni_assist?: IApplicationUniAssist;
+  portal_credentials?: IApplicationPortalCredentials;
+  doc_modification_thread?: IApplicationDocModificationThreadItem[];
+  reject_reason?: string;
+  admission_letter?: IApplicationAdmissionLetter;
+  finalEnrolment?: boolean;
+  decided?: string;
+  closed?: string;
+  admission?: string;
+  application_year?: string;
+}
+
+export const applicationSchema = new Schema<IApplication>({
   programId: { type: Schema.Types.ObjectId, ref: 'Program' },
   studentId: { type: Schema.Types.ObjectId, ref: 'User' },
   uni_assist: {

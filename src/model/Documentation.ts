@@ -1,6 +1,17 @@
 import { Schema } from 'mongoose';
 
-export const documentationsSchema = new Schema({
+export interface IDocumentation {
+  name?: string;
+  title?: string;
+  category?: string;
+  author?: string;
+  prop?: string;
+  text?: string;
+  country?: string;
+  updatedAt?: Date;
+}
+
+export const documentationsSchema = new Schema<IDocumentation>({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },

@@ -1,6 +1,26 @@
 import { Schema } from 'mongoose';
 
-export const coursesSchema = new Schema({
+export interface ICourseAnalysis {
+  path?: string;
+  analyzed_course?: string[];
+  isAnalysed?: boolean;
+  isAnalysedV2?: boolean;
+  pathV2?: string;
+  updatedAtV2?: Date;
+  updatedAt?: Date;
+}
+
+export interface ICourse {
+  student_id?: Schema.Types.ObjectId;
+  name?: string;
+  table_data_string?: string;
+  table_data_string_locked?: boolean;
+  table_data_string_taiger_guided?: string;
+  updatedAt?: Date;
+  analysis?: ICourseAnalysis;
+}
+
+export const coursesSchema = new Schema<ICourse>({
   student_id: { type: Schema.Types.ObjectId, ref: 'User' },
   name: { type: String, default: '' },
   table_data_string: { type: String, default: '' },

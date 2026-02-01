@@ -1,6 +1,14 @@
 import { Schema } from 'mongoose';
 
-export const ResponseTimeSchema = new Schema({
+export interface IResponseTime {
+  thread_id?: Schema.Types.ObjectId;
+  student_id?: Schema.Types.ObjectId;
+  interval_type: string;
+  intervalAvg: number;
+  updatedAt?: Date;
+}
+
+export const ResponseTimeSchema = new Schema<IResponseTime>({
   thread_id: {
     type: Schema.Types.ObjectId,
     ref: 'Documentthread'

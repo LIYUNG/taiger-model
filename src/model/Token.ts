@@ -1,6 +1,12 @@
 import { Schema } from 'mongoose';
 
-export const tokenSchema = new Schema({
+export interface IToken {
+  userId: Schema.Types.ObjectId;
+  value: string;
+  createdAt?: Date;
+}
+
+export const tokenSchema = new Schema<IToken>({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,

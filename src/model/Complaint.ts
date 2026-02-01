@@ -1,7 +1,30 @@
 import { Schema } from 'mongoose';
 import { TicketStatus } from '../constants';
 
-export const complaintSchema = new Schema(
+export interface IComplaintMessageFile {
+  name: string;
+  path: string;
+}
+
+export interface IComplaintMessage {
+  user_id?: Schema.Types.ObjectId;
+  message?: string;
+  createdAt?: Date;
+  file?: IComplaintMessageFile[];
+  ignore_message?: boolean;
+}
+
+export interface IComplaint {
+  requester_id: Schema.Types.ObjectId;
+  status?: string;
+  title?: string;
+  category?: string;
+  description?: string;
+  messages?: IComplaintMessage[];
+  createdAt?: Date;
+}
+
+export const complaintSchema = new Schema<IComplaint>(
   {
     requester_id: {
       type: Schema.Types.ObjectId,

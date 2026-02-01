@@ -1,20 +1,19 @@
 import { Schema } from 'mongoose';
 
-// Define an interface for your event document
 export interface IEvent {
-  requester_id: string[];
-  receiver_id: string[];
-  isConfirmedRequester: boolean;
-  isConfirmedReceiver: boolean;
-  meetingLink: string;
-  event_type: string;
-  title: string;
-  description: string;
-  start: Date;
-  end: Date;
+  requester_id?: Schema.Types.ObjectId[];
+  receiver_id?: Schema.Types.ObjectId[];
+  isConfirmedRequester?: boolean;
+  isConfirmedReceiver?: boolean;
+  meetingLink?: string;
+  event_type?: string;
+  title?: string;
+  description?: string;
+  start?: Date;
+  end?: Date;
 }
 
-export const EventSchema = new Schema(
+export const EventSchema = new Schema<IEvent>(
   {
     requester_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     receiver_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],

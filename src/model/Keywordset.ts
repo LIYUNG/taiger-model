@@ -1,6 +1,18 @@
 import { Schema } from 'mongoose';
 
-export const keywordSetSchema = new Schema(
+export interface IKeywordsetKeywords {
+  zh?: string[];
+  en?: string[];
+}
+
+export interface IKeywordset {
+  categoryName?: string;
+  description?: string;
+  keywords?: IKeywordsetKeywords;
+  antiKeywords?: IKeywordsetKeywords;
+}
+
+export const keywordSetSchema = new Schema<IKeywordset>(
   {
     categoryName: {
       type: String

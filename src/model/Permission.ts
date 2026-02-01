@@ -1,6 +1,23 @@
 import { Schema } from 'mongoose';
 
-export const permissionSchema = new Schema(
+export interface IPermission {
+  user_id?: Schema.Types.ObjectId;
+  taigerAiQuota?: number;
+  canAssignEditors?: boolean;
+  canUseTaiGerAI?: boolean;
+  canModifyProgramList?: boolean;
+  canModifyAllBaseDocuments?: boolean;
+  canAccessAllChat?: boolean;
+  canAssignAgents?: boolean;
+  canModifyDocumentation?: boolean;
+  canAccessStudentDatabase?: boolean;
+  canAddUser?: boolean;
+  canModifyUser?: boolean;
+  isEssayWriters?: boolean;
+  updatedAt?: Date;
+}
+
+export const permissionSchema = new Schema<IPermission>(
   {
     user_id: { type: Schema.Types.ObjectId, ref: 'User' },
     taigerAiQuota: {

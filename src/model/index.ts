@@ -11,7 +11,6 @@ export * from './Documentthread';
 export * from './Event';
 export * from './Internaldoc';
 export * from './Interval';
-export * from './Event';
 export * from './Interview';
 export * from './InterviewSurveyResponse';
 export * from './Keywordset';

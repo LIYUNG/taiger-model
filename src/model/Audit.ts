@@ -1,6 +1,16 @@
 import { Schema } from 'mongoose';
 
-export const auditSchema = new Schema(
+export interface IAudit {
+  performedBy?: Schema.Types.ObjectId;
+  targetUserId?: Schema.Types.ObjectId;
+  targetDocumentThreadId?: Schema.Types.ObjectId;
+  interviewThreadId?: Schema.Types.ObjectId;
+  action?: string;
+  field?: string;
+  changes?: { before?: Schema.Types.Mixed; after?: Schema.Types.Mixed };
+}
+
+export const auditSchema = new Schema<IAudit>(
   {
     performedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     targetUserId: { type: Schema.Types.ObjectId, ref: 'User' },

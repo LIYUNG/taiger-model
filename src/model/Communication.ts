@@ -1,6 +1,24 @@
 import { Schema } from 'mongoose';
 
-export const communicationsSchema = new Schema(
+export interface ICommunicationFile {
+  name: string;
+  path: string;
+}
+
+export interface ICommunication {
+  student_id?: Schema.Types.ObjectId;
+  user_id?: Schema.Types.ObjectId;
+  message?: string;
+  readBy?: Schema.Types.ObjectId[];
+  timeStampReadBy?: Schema.Types.Mixed;
+  files?: ICommunicationFile[];
+  createdAt?: Date;
+  ignore_message?: boolean;
+  ignoredMessageUpdatedAt?: Date;
+  ignoredMessageBy?: Schema.Types.ObjectId;
+}
+
+export const communicationsSchema = new Schema<ICommunication>(
   {
     student_id: { type: Schema.Types.ObjectId, ref: 'User' },
     user_id: { type: Schema.Types.ObjectId, ref: 'User' },

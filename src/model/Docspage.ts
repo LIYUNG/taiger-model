@@ -1,17 +1,17 @@
 import { Schema } from 'mongoose';
 
-export interface IDocspages {
-  name: string;
-  title: string;
-  category: string;
-  prop: string;
-  author: string;
-  text: string;
-  country: string;
-  updatedAt: Date;
+export interface IDocspage {
+  name?: string;
+  title?: string;
+  category?: string;
+  prop?: string;
+  author?: string;
+  text?: string;
+  country?: string;
+  updatedAt?: Date;
 }
 
-export const docspagesSchema = new Schema({
+export const docspagesSchema = new Schema<IDocspage>({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },

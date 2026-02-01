@@ -1,6 +1,17 @@
 import { Schema } from 'mongoose';
 
-export const internaldocsSchema = new Schema({
+export interface IInternaldoc {
+  name?: string;
+  title?: string;
+  category?: string;
+  internal?: boolean;
+  author?: string;
+  text?: string;
+  country?: string;
+  updatedAt?: Date;
+}
+
+export const internaldocsSchema = new Schema<IInternaldoc>({
   name: { type: String, default: '' },
   title: { type: String, default: '' },
   category: { type: String, default: '' },

@@ -5,7 +5,18 @@ const TicketStatus = {
   Resolved: 'resolved'
 };
 
-export const ticketSchema = new Schema(
+export interface ITicket {
+  requester_id: Schema.Types.ObjectId;
+  resolver_id?: Schema.Types.ObjectId;
+  program_id?: Schema.Types.ObjectId;
+  status?: string;
+  type?: string;
+  description?: string;
+  feedback?: string;
+  createdAt?: Date;
+}
+
+export const ticketSchema = new Schema<ITicket>(
   {
     requester_id: {
       type: Schema.Types.ObjectId,

@@ -7,7 +7,7 @@ export interface IAllCourse {
   description: string;
 }
 
-export const allCourseSchema = new Schema(
+export const allCourseSchema = new Schema<IAllCourse>(
   {
     updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     all_course_chinese: { type: String, required: true },

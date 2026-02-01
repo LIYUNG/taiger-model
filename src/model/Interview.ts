@@ -1,6 +1,21 @@
 import { Schema } from 'mongoose';
 
-export const interviewsSchema = new Schema(
+export interface IInterview {
+  student_id?: Schema.Types.ObjectId;
+  trainer_id?: Schema.Types.ObjectId[];
+  thread_id?: Schema.Types.ObjectId;
+  program_id?: Schema.Types.ObjectId;
+  event_id?: Schema.Types.ObjectId;
+  interview_description?: string;
+  interviewer?: string;
+  interview_duration?: string;
+  interview_date?: Date;
+  isClosed?: boolean;
+  start?: Date;
+  end?: Date;
+}
+
+export const interviewsSchema = new Schema<IInterview>(
   {
     student_id: { type: Schema.Types.ObjectId, ref: 'User' },
     trainer_id: [{ type: Schema.Types.ObjectId, ref: 'User' }],

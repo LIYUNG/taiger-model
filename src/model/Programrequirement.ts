@@ -2,7 +2,42 @@ import { Schema } from 'mongoose';
 
 import { PROGRAM_SUBJECT_KEYS } from '../model/Program';
 
-export const programRequirementSchema = new Schema(
+export interface IProgramrequirementProgramCategory {
+  program_category?: string;
+  category_description?: string;
+  requiredECTS?: number;
+  keywordSets?: Schema.Types.ObjectId[];
+  maxScore?: number;
+}
+
+export interface IProgramrequirement {
+  programId?: Schema.Types.ObjectId[];
+  program_categories?: IProgramrequirementProgramCategory[];
+  attributes?: string[];
+  fpso?: string;
+  admissionDescription?: string;
+  gpaScoreBoundaryGPA?: number;
+  gpaScore?: number;
+  gpaMinScore?: number;
+  coursesScore?: number;
+  cvScore?: number;
+  mlScore?: number;
+  rlScore?: number;
+  essayScore?: number;
+  gmatScore?: number;
+  greScore?: number;
+  interviewScore?: number;
+  workExperienceScore?: number;
+  testScore?: number;
+  firstRoundConsidered?: string[];
+  secondRoundConsidered?: string[];
+  directRejectionScore?: number;
+  directAdmissionScore?: number;
+  directRejectionSecondScore?: number;
+  directAdmissionSecondScore?: number;
+}
+
+export const programRequirementSchema = new Schema<IProgramrequirement>(
   {
     programId: [{ type: Schema.Types.ObjectId, ref: 'Program' }],
     program_categories: [
