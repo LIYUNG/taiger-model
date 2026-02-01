@@ -42,6 +42,7 @@ export interface IApplication {
   closed?: string;
   admission?: string;
   application_year?: string;
+  isLocked?: boolean;
 }
 
 export const applicationSchema = new Schema<IApplication>({
