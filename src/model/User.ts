@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import isEmail from 'validator/lib/isEmail';
+import validator from 'validator';
 import { DocumentStatusType } from '@taiger-common/core';
 
 import { PROGRAM_SUBJECT_KEYS } from './Program';
@@ -262,7 +262,7 @@ const userSchema = new Schema(
       type: String,
       unique: true,
       lowercase: true,
-      validate: [isEmail, 'Invalid email address']
+      validate: [validator.isEmail, 'Invalid email address']
     },
     pictureUrl: {
       type: String
