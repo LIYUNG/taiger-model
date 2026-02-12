@@ -229,15 +229,16 @@ export interface IExternal extends IUser {
   };
 }
 
-const ManagerType = {
+export const ManagerType = {
   Agent: 'Agent',
   Editor: 'Editor',
   AgentAndEditor: 'AgentAndEditor',
   None: 'None'
 };
-const options = { discriminatorKey: 'role', timestamps: true };
 
-const attributeSchema = new Schema({
+export const options = { discriminatorKey: 'role', timestamps: true };
+
+export const attributeSchema = new Schema({
   value: {
     type: Number,
     required: true
@@ -248,7 +249,7 @@ const attributeSchema = new Schema({
   }
 });
 
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     role: {
       type: String,
@@ -597,7 +598,7 @@ const userSchema = new Schema(
   options
 );
 
-const studentSchema = new Schema(
+export const studentSchema = new Schema(
   {
     agents: [{ type: Schema.Types.ObjectId, ref: 'Agent' }],
     editors: [{ type: Schema.Types.ObjectId, ref: 'Editor' }],
@@ -658,7 +659,7 @@ const studentSchema = new Schema(
   options
 );
 
-const externalSchema = new Schema(
+export const externalSchema = new Schema(
   {
     attribute: {
       can_update_program_list: {
@@ -678,7 +679,7 @@ const externalSchema = new Schema(
   options
 );
 
-const managerSchema = new Schema(
+export const managerSchema = new Schema(
   {
     agents: [{ type: Schema.Types.ObjectId, ref: 'Agent' }],
     editors: [{ type: Schema.Types.ObjectId, ref: 'Editor' }],
@@ -758,7 +759,7 @@ const officehours = {
   }
 };
 
-const agentSchema = new Schema(
+export const agentSchema = new Schema(
   {
     timezone: { type: String, default: '' },
     officehours: officehours,
@@ -800,7 +801,7 @@ const agentSchema = new Schema(
   options
 );
 
-const editorSchema = new Schema(
+export const editorSchema = new Schema(
   {
     timezone: { type: String, default: '' },
     officehours: officehours,
@@ -847,13 +848,3 @@ const editorSchema = new Schema(
   },
   options
 );
-
-module.exports = {
-  attributeSchema,
-  userSchema,
-  studentSchema,
-  agentSchema,
-  externalSchema,
-  editorSchema,
-  managerSchema
-};
