@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 import validator from 'validator';
 import { DocumentStatusType } from '@taiger-common/core';
 
+import { Role } from '../constants/users';
 import { PROGRAM_SUBJECT_KEYS } from './Program';
 
 // --- Interfaces for frontend/backend type reference ---
@@ -109,6 +110,7 @@ export interface IUserAttribute {
 }
 
 export interface IUser {
+  role?: string;
   firstname?: string;
   firstname_chinese?: string;
   lastname?: string;
@@ -242,6 +244,11 @@ const attributeSchema = new Schema({
 
 const userSchema = new Schema(
   {
+    role: {
+      type: String,
+      enum: Object.values(Role),
+      required: true
+    },
     firstname: {
       type: String,
       trim: true
