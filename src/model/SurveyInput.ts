@@ -1,4 +1,6 @@
 import { Schema } from 'mongoose';
+import { IStudent } from './User';
+import { IProgram } from './Program';
 
 const contentType = ['sentence', 'paragraph', 'essay'];
 const STUDENT_INPUT_STATUS_E = {
@@ -17,8 +19,8 @@ export interface ISurveyInputSurveyContent {
 }
 
 export interface ISurveyInput {
-  studentId: Schema.Types.ObjectId;
-  programId?: Schema.Types.ObjectId;
+  studentId: IStudent | Schema.Types.ObjectId | string;
+  programId?: IProgram | Schema.Types.ObjectId | string;
   fileType: string;
   isFinalVersion?: boolean;
   surveyContent?: ISurveyInputSurveyContent[];

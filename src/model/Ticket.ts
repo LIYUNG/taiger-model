@@ -1,4 +1,6 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
+import { IProgram } from './Program';
 
 const TicketStatus = {
   Open: 'open',
@@ -6,9 +8,9 @@ const TicketStatus = {
 };
 
 export interface ITicket {
-  requester_id: Schema.Types.ObjectId;
-  resolver_id?: Schema.Types.ObjectId;
-  program_id?: Schema.Types.ObjectId;
+  requester_id: IUser | Schema.Types.ObjectId | string;
+  resolver_id?: IUser | Schema.Types.ObjectId | string;
+  program_id?: IProgram | Schema.Types.ObjectId | string;
   status?: string;
   type?: string;
   description?: string;

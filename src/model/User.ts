@@ -3,6 +3,7 @@ import validator from 'validator';
 
 import { Role } from '../constants/users';
 import { PROGRAM_SUBJECT_KEYS } from './Program';
+import { IDocumentthread } from './Documentthread';
 
 // --- Interfaces for frontend/backend type reference ---
 export enum DocumentStatusType {
@@ -147,15 +148,15 @@ export interface IUserProfileItem {
 
 export interface IUserGeneraldocsThread {
   isFinalVersion?: boolean;
-  latest_message_left_by_id?: string;
-  doc_thread_id?: Schema.Types.ObjectId;
+  latest_message_left_by_id?: IUser | Schema.Types.ObjectId | string;
+  doc_thread_id?: IDocumentthread | Schema.Types.ObjectId | string;
   updatedAt?: Date;
   createdAt?: Date;
 }
 
 export interface IStudent extends IUser {
-  agents?: Schema.Types.ObjectId[];
-  editors?: Schema.Types.ObjectId[];
+  agents?: IAgent[] | Schema.Types.ObjectId[] | string[];
+  editors?: IEditor[] | Schema.Types.ObjectId[] | string[];
   needEditor?: boolean;
   applying_program_count?: number;
   attributes?: IUserAttribute[];

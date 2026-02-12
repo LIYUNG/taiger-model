@@ -1,8 +1,10 @@
 import { Schema } from 'mongoose';
+import { IDocumentthread } from './Documentthread';
+import { IStudent } from './User';
 
 export interface IResponseTime {
-  thread_id?: Schema.Types.ObjectId;
-  student_id?: Schema.Types.ObjectId;
+  thread_id?: IDocumentthread | Schema.Types.ObjectId | string;
+  student_id?: IStudent | Schema.Types.ObjectId | string;
   interval_type: string;
   intervalAvg: number;
   updatedAt?: Date;

@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import { TicketStatus } from '../constants';
+import { IUser } from './User';
 
 export interface IComplaintMessageFile {
   name: string;
@@ -7,7 +8,7 @@ export interface IComplaintMessageFile {
 }
 
 export interface IComplaintMessage {
-  user_id?: Schema.Types.ObjectId;
+  user_id?: IUser | Schema.Types.ObjectId | string;
   message?: string;
   createdAt?: Date;
   file?: IComplaintMessageFile[];
@@ -15,7 +16,7 @@ export interface IComplaintMessage {
 }
 
 export interface IComplaint {
-  requester_id: Schema.Types.ObjectId;
+  requester_id: IUser | Schema.Types.ObjectId | string;
   status?: string;
   title?: string;
   category?: string;

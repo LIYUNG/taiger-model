@@ -1,4 +1,6 @@
 import { Schema } from 'mongoose';
+import { IProgram } from './Program';
+import { IStudent } from './User';
 
 export interface IApplicationUniAssist {
   status?: string;
@@ -30,8 +32,8 @@ export interface IApplicationAdmissionLetter {
 }
 
 export interface IApplication {
-  programId?: Schema.Types.ObjectId;
-  studentId?: Schema.Types.ObjectId;
+  programId?: IProgram | Schema.Types.ObjectId | string;
+  studentId?: IStudent | Schema.Types.ObjectId | string;
   uni_assist?: IApplicationUniAssist;
   portal_credentials?: IApplicationPortalCredentials;
   doc_modification_thread?: IApplicationDocModificationThreadItem[];

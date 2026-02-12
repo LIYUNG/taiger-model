@@ -1,7 +1,8 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
 
 export interface IToken {
-  userId: Schema.Types.ObjectId;
+  userId: IUser | Schema.Types.ObjectId | string;
   value: string;
   createdAt?: Date;
 }

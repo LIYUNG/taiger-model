@@ -1,11 +1,16 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
+import { IStudent } from './User';
+import { IProgram } from './Program';
+import { IDocumentthread } from './Documentthread';
+import { IEvent } from './Event';
 
 export interface IInterview {
-  student_id?: Schema.Types.ObjectId;
-  trainer_id?: Schema.Types.ObjectId[];
-  thread_id?: Schema.Types.ObjectId;
-  program_id?: Schema.Types.ObjectId;
-  event_id?: Schema.Types.ObjectId;
+  student_id?: IStudent | Schema.Types.ObjectId | string;
+  trainer_id?: IUser[] | Schema.Types.ObjectId[] | string[];
+  thread_id?: IDocumentthread | Schema.Types.ObjectId | string;
+  program_id?: IProgram | Schema.Types.ObjectId | string;
+  event_id?: IEvent | Schema.Types.ObjectId | string;
   interview_description?: string;
   interviewer?: string;
   interview_duration?: string;

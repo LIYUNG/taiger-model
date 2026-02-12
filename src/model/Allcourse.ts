@@ -1,7 +1,8 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
 
 export interface IAllCourse {
-  updatedBy: Schema.Types.ObjectId;
+  updatedBy: IUser | Schema.Types.ObjectId | string;
   all_course_chinese: string;
   all_course_english: string;
   description: string;

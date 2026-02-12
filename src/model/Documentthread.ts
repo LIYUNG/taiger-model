@@ -1,4 +1,8 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
+import { IStudent } from './User';
+import { IProgram } from './Program';
+import { IApplication } from './Application';
 
 export interface IDocumentthreadMessageFile {
   name: string;
@@ -6,7 +10,7 @@ export interface IDocumentthreadMessageFile {
 }
 
 export interface IDocumentthreadMessage {
-  user_id?: Schema.Types.ObjectId;
+  user_id?: IUser | Schema.Types.ObjectId | string;
   message?: string;
   createdAt?: Date;
   file?: IDocumentthreadMessageFile[];
@@ -14,19 +18,19 @@ export interface IDocumentthreadMessage {
 }
 
 export interface IDocumentthread {
-  student_id: Schema.Types.ObjectId;
-  program_id?: Schema.Types.ObjectId;
-  application_id?: Schema.Types.ObjectId;
-  outsourced_user_id?: Schema.Types.ObjectId[];
-  pin_by_user_id?: Schema.Types.ObjectId[];
-  flag_by_user_id?: Schema.Types.ObjectId[];
+  student_id: IStudent | Schema.Types.ObjectId | string;
+  program_id?: IProgram | Schema.Types.ObjectId | string;
+  application_id?: IApplication | Schema.Types.ObjectId | string;
+  outsourced_user_id?: IUser[] | Schema.Types.ObjectId[] | string[];
+  pin_by_user_id?: IUser[] | Schema.Types.ObjectId[] | string[];
+  flag_by_user_id?: IUser[] | Schema.Types.ObjectId[] | string[];
   file_type: string;
   isFinalVersion?: boolean;
   isOriginAuthorDeclarationConfirmedByStudent?: boolean;
   isOriginAuthorDeclarationConfirmedByStudentTimestamp?: Date;
   messages?: IDocumentthreadMessage[];
   isEssayConsultantNeeded?: boolean;
-  essayConsultantIds?: Schema.Types.ObjectId[];
+  essayConsultantIds?: IUser[] | Schema.Types.ObjectId[] | string[];
   updatedAt?: Date;
 }
 

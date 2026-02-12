@@ -1,7 +1,8 @@
 import { Schema } from 'mongoose';
+import { IStudent } from './User';
 
 export interface INote {
-  student_id?: Schema.Types.ObjectId;
+  student_id?: IStudent | Schema.Types.ObjectId | string;
   notes?: string;
   updatedAt?: Date;
 }

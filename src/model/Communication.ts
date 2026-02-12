@@ -1,4 +1,6 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
+import { IStudent } from './User';
 
 export interface ICommunicationFile {
   name: string;
@@ -6,16 +8,16 @@ export interface ICommunicationFile {
 }
 
 export interface ICommunication {
-  student_id?: Schema.Types.ObjectId;
-  user_id?: Schema.Types.ObjectId;
+  student_id?: IStudent | Schema.Types.ObjectId | string;
+  user_id?: IUser | Schema.Types.ObjectId | string;
   message?: string;
-  readBy?: Schema.Types.ObjectId[];
+  readBy?: IUser[] | Schema.Types.ObjectId[] | string[];
   timeStampReadBy?: Schema.Types.Mixed;
   files?: ICommunicationFile[];
   createdAt?: Date;
   ignore_message?: boolean;
   ignoredMessageUpdatedAt?: Date;
-  ignoredMessageBy?: Schema.Types.ObjectId;
+  ignoredMessageBy?: IUser | Schema.Types.ObjectId | string;
 }
 
 export const communicationsSchema = new Schema<ICommunication>(

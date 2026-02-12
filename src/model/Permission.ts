@@ -1,7 +1,8 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
 
 export interface IPermission {
-  user_id?: Schema.Types.ObjectId;
+  user_id?: IUser | Schema.Types.ObjectId | string;
   taigerAiQuota?: number;
   canAssignEditors?: boolean;
   canUseTaiGerAI?: boolean;

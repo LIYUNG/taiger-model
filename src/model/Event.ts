@@ -1,8 +1,9 @@
 import { Schema } from 'mongoose';
+import { IUser } from './User';
 
 export interface IEvent {
-  requester_id?: Schema.Types.ObjectId[];
-  receiver_id?: Schema.Types.ObjectId[];
+  requester_id?: IUser[] | Schema.Types.ObjectId[] | string[];
+  receiver_id?: IUser[] | Schema.Types.ObjectId[] | string[];
   isConfirmedRequester?: boolean;
   isConfirmedReceiver?: boolean;
   meetingLink?: string;

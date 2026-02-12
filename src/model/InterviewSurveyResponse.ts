@@ -1,4 +1,7 @@
 import { Schema } from 'mongoose';
+import { IStudent } from './User';
+import { IProgram } from './Program';
+import { IInterview } from './Interview';
 
 export interface IInterviewSurveyResponseResponse {
   questionId?: string;
@@ -6,9 +9,9 @@ export interface IInterviewSurveyResponseResponse {
 }
 
 export interface IInterviewSurveyResponse {
-  student_id?: Schema.Types.ObjectId;
-  interview_id?: Schema.Types.ObjectId;
-  program_id?: Schema.Types.ObjectId;
+  student_id?: IStudent | Schema.Types.ObjectId | string;
+  interview_id?: IInterview | Schema.Types.ObjectId | string;
+  program_id?: IProgram | Schema.Types.ObjectId | string;
   responses?: IInterviewSurveyResponseResponse[];
   isFinal?: boolean;
   interviewQuestions?: string;
