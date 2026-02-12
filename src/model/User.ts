@@ -1,11 +1,17 @@
 import { Schema } from 'mongoose';
 import validator from 'validator';
-import { DocumentStatusType } from '@taiger-common/core';
 
 import { Role } from '../constants/users';
 import { PROGRAM_SUBJECT_KEYS } from './Program';
 
 // --- Interfaces for frontend/backend type reference ---
+export enum DocumentStatusType {
+  Uploaded = 'uploaded',
+  Missing = 'missing',
+  Accepted = 'accepted',
+  Rejected = 'rejected',
+  NotNeeded = 'notneeded'
+}
 
 export interface IUserNotification {
   isRead_survey_not_complete?: boolean;
