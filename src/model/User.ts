@@ -129,6 +129,7 @@ export interface IUser {
   birthday?: string;
   linkedIn?: string;
   lineId?: string;
+  timezone?: string;
   isAccountActivated?: boolean;
   notification?: IUserNotification;
   taigerai?: IUserTaigerai;

@@ -5,6 +5,8 @@
 
 import type {
   IStudent,
+  IAgent,
+  IEditor,
   IUserGeneraldocsThread,
   IUserAcademicBackgroundUniversity,
   IUserAcademicBackgroundLanguage,
@@ -62,23 +64,66 @@ export interface IProgramWithId extends Omit<IProgram, 'vcId'> {
   vcId?: string;
 }
 
-/** Frontend-friendly Application with string _id */
+/** Agent with string _id and agent-specific fields (timezone, officehours, etc.) */
+export interface IAgentWithId
+  extends Omit<IAgent, 'agents' | 'editors' | 'profile'> {
+  _id: string;
+}
+
+/** Editor with string _id and editor-specific fields (timezone, attribute, etc.) */
+export interface IEditorWithId
+  extends Omit<IEditor, 'agents' | 'editors' | 'profile'> {
+  _id: string;
+}
+
+/** Frontend-friendly Application with string _id (unpopulated refs) */
 export interface IApplicationWithId extends IApplication {
   _id: string;
 }
 
+/** Application as returned by API — populated programId and studentId */
+export interface IApplicationPopulated
+  extends Omit<IApplication, 'programId' | 'studentId'> {
+  _id: string;
+  programId?: IProgramWithId;
+  studentId?: IStudentResponse;
+}
+
 /** Student as returned by the API with populated agents, editors, applications */
 export interface IStudentResponse extends IStudent {
+  _id: string;
   applying_program_count?: number;
-  applications?: IApplicationWithId[];
-  agents?: IUserWithId[];
-  editors?: IUserWithId[];
+  applications?: IApplicationPopulated[];
+  agents?: IAgentWithId[];
+  editors?: IEditorWithId[];
   generaldocs_threads?: IUserGeneraldocsThread[];
 }
 
-/** Document thread with string _id */
+/** Document thread with string _id (unpopulated refs) */
 export interface IDocumentthreadWithId extends IDocumentthread {
   _id: string;
+}
+
+/** Document thread as returned by API — populated refs */
+export interface IDocumentthreadPopulated
+  extends Omit<
+    IDocumentthread,
+    | 'student_id'
+    | 'program_id'
+    | 'application_id'
+    | 'outsourced_user_id'
+    | 'pin_by_user_id'
+    | 'flag_by_user_id'
+    | 'essayConsultantIds'
+  > {
+  _id: string;
+  student_id: IStudentResponse | string;
+  program_id?: IProgramWithId | string;
+  application_id?: IApplicationPopulated | string;
+  outsourced_user_id?: IUserWithId[];
+  pin_by_user_id?: IUserWithId[];
+  flag_by_user_id?: IUserWithId[];
+  essayConsultantIds?: IUserWithId[];
 }
 
 /** Communication message with string _id */

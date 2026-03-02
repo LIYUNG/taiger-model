@@ -1,8 +1,11 @@
 import type { ApiResponse, SuccessResponse } from './common';
 import type {
   IDocumentthreadWithId,
+  IDocumentthreadPopulated,
   ISurveyInputWithId,
   IUserWithId,
+  IAgentWithId,
+  IEditorWithId,
   IAuditWithId
 } from './serialized';
 
@@ -17,27 +20,28 @@ export interface ThreadFavoriteData {
  */
 export interface GetMessagesThreadResponse {
   success: boolean;
-  data?: IDocumentthreadWithId;
-  similarThreads?: IDocumentthreadWithId[];
-  agents?: IUserWithId[];
-  editors?: IUserWithId[];
+  data?: IDocumentthreadPopulated;
+  similarThreads?: IDocumentthreadPopulated[];
+  agents?: IAgentWithId[];
+  editors?: IEditorWithId[];
   threadAuditLog?: IAuditWithId[];
   deadline?: unknown;
   conflict_list?: unknown[];
 }
 
 /** GET /api/document-threads/overview/all */
-export type GetActiveThreadsResponse = ApiResponse<IDocumentthreadWithId[]>;
+export type GetActiveThreadsResponse = ApiResponse<IDocumentthreadPopulated[]>;
 
 /** GET /api/document-threads/student-threads/:studentId */
-export type GetThreadsByStudentResponse = ApiResponse<IDocumentthreadWithId[]>;
+export type GetThreadsByStudentResponse =
+  ApiResponse<IDocumentthreadPopulated[]>;
 
 /**
  * GET /api/document-threads/overview/taiger-user/:userId
  * Non-standard: data is an object with threads + user
  */
 export type GetMyStudentThreadsResponse = ApiResponse<{
-  threads: IDocumentthreadWithId[];
+  threads: IDocumentthreadPopulated[];
   user: IUserWithId;
 }>;
 

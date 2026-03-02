@@ -45,6 +45,8 @@ export interface IApplication {
   admission?: string;
   application_year?: string;
   isLocked?: boolean;
+  credential_a_filled?: boolean;
+  credential_b_filled?: boolean;
 }
 
 export const applicationSchema = new Schema<IApplication>({

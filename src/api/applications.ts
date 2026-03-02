@@ -1,6 +1,7 @@
 import type { ApiResponse, SuccessResponse } from './common';
 import type {
   IApplicationWithId,
+  IApplicationPopulated,
   IStudentResponse,
   IUserWithId,
   IProgramWithId
@@ -13,7 +14,7 @@ export interface ProgramCountItem {
 }
 
 /** GET /api/applications */
-export type GetApplicationsResponse = ApiResponse<IApplicationWithId[]>;
+export type GetApplicationsResponse = ApiResponse<IApplicationPopulated[]>;
 
 /**
  * GET /api/applications/taiger-user/:userId
@@ -22,14 +23,14 @@ export type GetApplicationsResponse = ApiResponse<IApplicationWithId[]>;
 export interface GetMyStudentsApplicationsResponse {
   success: boolean;
   data?: {
-    applications: IApplicationWithId[];
+    applications: IApplicationPopulated[];
     user: IUserWithId;
   };
 }
 
 /** GET /api/applications/all/active/applications */
 export type GetActiveStudentsApplicationsResponse =
-  ApiResponse<IApplicationWithId[]>;
+  ApiResponse<IApplicationPopulated[]>;
 
 /** GET /api/applications/student/:studentId */
 export type GetStudentApplicationsResponse = ApiResponse<IStudentResponse>;
@@ -63,7 +64,7 @@ export interface AdmissionsOverviewData {
  */
 export interface GetAdmissionsResponse {
   success: boolean;
-  data?: IApplicationWithId[];
+  data?: IApplicationPopulated[];
   result?: ProgramCountItem[];
 }
 
