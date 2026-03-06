@@ -57,9 +57,6 @@ export interface GetStatisticsAgentsResponse {
   agentStudentDistribution?: AgentStudentDistributionItem[];
 }
 
-/** GET /api/teams/statistics */
-export type GetStatisticsV2Response = ApiResponse<unknown>;
-
 /** GET /api/teams/statistics/kpi */
 export type GetStatisticsKPIResponse = ApiResponse<StatisticsKPIData>;
 
