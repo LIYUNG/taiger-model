@@ -29,8 +29,7 @@ export interface IDocumentthread {
   isOriginAuthorDeclarationConfirmedByStudent?: boolean;
   isOriginAuthorDeclarationConfirmedByStudentTimestamp?: Date;
   messages?: IDocumentthreadMessage[];
-  isEssayConsultantNeeded?: boolean;
-  essayConsultantIds?: IUser[] | Schema.Types.ObjectId[] | string[];
+  essayReviewerIds?: IUser[] | Schema.Types.ObjectId[] | string[];
   updatedAt?: Date;
 }
 
@@ -74,9 +73,6 @@ export const documentThreadsSchema = new Schema<IDocumentthread>({
       ignore_message: Boolean
     }
   ],
-  isEssayConsultantNeeded: {
-    type: Boolean
-  },
-  essayConsultantIds: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  essayReviewerIds: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   updatedAt: Date
 });

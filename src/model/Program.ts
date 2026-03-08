@@ -380,7 +380,6 @@ export interface IProgram {
   isPrivateSchool?: boolean;
   isPartnerSchool?: boolean;
   schoolType?: string;
-  isEssayConsultantNeeded?: boolean;
   tags?: string[];
   url?: string;
   isNC?: boolean;
@@ -612,10 +611,6 @@ export const programModule = {
   schoolType: {
     type: String,
     enum: SCHOOL_TYPES
-  },
-  isEssayConsultantNeeded: {
-    type: Boolean,
-    default: false
   },
   tags: [
     {
