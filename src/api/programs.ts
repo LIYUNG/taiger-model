@@ -85,7 +85,7 @@ export const GetProgramResponseSchema = z.object({
   success: z.boolean(),
   data: ProgramWithIdSchema,
   students: z.array(StudentResponseSchema).optional(),
-  vc: z.array(z.unknown()).optional()
+  vc: z.union([z.record(z.unknown()), z.array(z.unknown())]).optional()
 });
 
 export const CreateProgramResponseSchema = createApiResponseSchema(ProgramWithIdSchema);
