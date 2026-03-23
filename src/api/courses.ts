@@ -1,45 +1,76 @@
-import type { ApiResponse, SuccessResponse } from './common';
-import type { IAllCourseWithId, IKeywordsetWithId } from './serialized';
-import type { ICourse } from '../model/Course';
+import { z } from 'zod';
+import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import { AllCourseWithIdSchema, KeywordsetWithIdSchema } from './serialized';
+import { CourseSchema } from '../schema/models';
+
+// =========== Schemas ===========
 
 // --- All Courses (admin-managed global course catalogue) ---
 
-/** GET /api/all-courses */
-export type GetAllCoursesResponse = ApiResponse<IAllCourseWithId[]>;
+export const GetAllCoursesResponseSchema = createApiResponseSchema(z.array(AllCourseWithIdSchema));
 
-/** GET /api/all-courses/:courseId */
-export type GetAllCourseResponse = ApiResponse<IAllCourseWithId>;
+export const GetAllCourseResponseSchema = createApiResponseSchema(AllCourseWithIdSchema);
 
-/** POST /api/all-courses */
-export type CreateAllCourseResponse = ApiResponse<IAllCourseWithId>;
+export const CreateAllCourseResponseSchema = createApiResponseSchema(AllCourseWithIdSchema);
 
-/** PUT /api/all-courses/:courseId */
-export type UpdateAllCourseResponse = ApiResponse<IAllCourseWithId>;
+export const UpdateAllCourseResponseSchema = createApiResponseSchema(AllCourseWithIdSchema);
 
-/** DELETE /api/all-courses/:courseId */
-export type DeleteAllCourseResponse = SuccessResponse;
+export const DeleteAllCourseResponseSchema = SuccessResponseSchema;
 
 // --- Course Keyword Sets ---
 
-/** GET /api/course-keywords */
-export type GetCourseKeywordsetsResponse = ApiResponse<IKeywordsetWithId[]>;
+export const GetCourseKeywordsetsResponseSchema = createApiResponseSchema(
+  z.array(KeywordsetWithIdSchema)
+);
 
-/** GET /api/course-keywords/:keywordsSetId */
-export type GetCourseKeywordsetResponse = ApiResponse<IKeywordsetWithId>;
+export const GetCourseKeywordsetResponseSchema = createApiResponseSchema(KeywordsetWithIdSchema);
 
-/** POST /api/course-keywords/new */
-export type CreateKeywordsetResponse = ApiResponse<IKeywordsetWithId>;
+export const CreateKeywordsetResponseSchema = createApiResponseSchema(KeywordsetWithIdSchema);
 
-/** PUT /api/course-keywords/:keywordsSetId */
-export type UpdateKeywordsetResponse = ApiResponse<IKeywordsetWithId>;
+export const UpdateKeywordsetResponseSchema = createApiResponseSchema(KeywordsetWithIdSchema);
 
-/** DELETE /api/course-keywords/:keywordsSetId */
-export type DeleteKeywordsetResponse = SuccessResponse;
+export const DeleteKeywordsetResponseSchema = SuccessResponseSchema;
 
 // --- Student Courses ---
 
+export const GetStudentCoursesResponseSchema = createApiResponseSchema(CourseSchema);
+
+export const UpdateStudentCoursesResponseSchema = createApiResponseSchema(CourseSchema);
+
+// =========== Inferred types ===========
+
+/** GET /api/all-courses */
+export type GetAllCoursesResponse = z.infer<typeof GetAllCoursesResponseSchema>;
+
+/** GET /api/all-courses/:courseId */
+export type GetAllCourseResponse = z.infer<typeof GetAllCourseResponseSchema>;
+
+/** POST /api/all-courses */
+export type CreateAllCourseResponse = z.infer<typeof CreateAllCourseResponseSchema>;
+
+/** PUT /api/all-courses/:courseId */
+export type UpdateAllCourseResponse = z.infer<typeof UpdateAllCourseResponseSchema>;
+
+/** DELETE /api/all-courses/:courseId */
+export type DeleteAllCourseResponse = z.infer<typeof DeleteAllCourseResponseSchema>;
+
+/** GET /api/course-keywords */
+export type GetCourseKeywordsetsResponse = z.infer<typeof GetCourseKeywordsetsResponseSchema>;
+
+/** GET /api/course-keywords/:keywordsSetId */
+export type GetCourseKeywordsetResponse = z.infer<typeof GetCourseKeywordsetResponseSchema>;
+
+/** POST /api/course-keywords/new */
+export type CreateKeywordsetResponse = z.infer<typeof CreateKeywordsetResponseSchema>;
+
+/** PUT /api/course-keywords/:keywordsSetId */
+export type UpdateKeywordsetResponse = z.infer<typeof UpdateKeywordsetResponseSchema>;
+
+/** DELETE /api/course-keywords/:keywordsSetId */
+export type DeleteKeywordsetResponse = z.infer<typeof DeleteKeywordsetResponseSchema>;
+
 /** GET /api/courses/:student_id */
-export type GetStudentCoursesResponse = ApiResponse<ICourse>;
+export type GetStudentCoursesResponse = z.infer<typeof GetStudentCoursesResponseSchema>;
 
 /** PUT /api/courses/:student_id */
-export type UpdateStudentCoursesResponse = ApiResponse<ICourse>;
+export type UpdateStudentCoursesResponse = z.infer<typeof UpdateStudentCoursesResponseSchema>;

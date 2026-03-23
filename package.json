@@ -51,6 +51,7 @@
     "url": "https://github.com/LIYUNG/taiger-model/issues"
   },
   "devDependencies": {
+    "zod": "^3.25.76",
     "@commitlint/cli": "^13.1.0",
     "@commitlint/config-conventional": "^13.1.0",
     "@taiger-common/core": "^1.0.10",
@@ -75,6 +76,7 @@
     "webpack-cli": "^4.8.0"
   },
   "peerDependencies": {
-    "mongoose": "^8.9.5"
+    "mongoose": "^8.9.5",
+    "zod": "^3.0.0"
   }
 }

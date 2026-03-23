@@ -1,87 +1,149 @@
-import type { ApiResponse, SuccessResponse } from './common';
-import type {
-  IApplicationWithId,
-  IApplicationPopulated,
-  IStudentResponse,
-  IUserWithId,
-  IProgramWithId
+import { z } from 'zod';
+import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import {
+  ApplicationWithIdSchema,
+  ApplicationPopulatedSchema,
+  StudentResponseSchema,
+  UserWithIdSchema,
+  ProgramWithIdSchema
 } from './serialized';
 
+// =========== Schemas ===========
+
+export const ProgramCountItemSchema = z.object({
+  program_id: z.string().optional(),
+  count: z.number().optional()
+});
+
+export const GetApplicationsResponseSchema = createApiResponseSchema(
+  z.array(ApplicationPopulatedSchema)
+);
+
+export const GetMyStudentsApplicationsResponseSchema = z.object({
+  success: z.boolean(),
+  data: z
+    .object({
+      applications: z.array(ApplicationPopulatedSchema),
+      user: UserWithIdSchema
+    })
+    .optional()
+});
+
+export const GetActiveStudentsApplicationsResponseSchema = createApiResponseSchema(
+  z.array(ApplicationPopulatedSchema)
+);
+
+export const GetStudentApplicationsResponseSchema = createApiResponseSchema(StudentResponseSchema);
+
+export const CreateApplicationResponseSchema = createApiResponseSchema(
+  z.array(ApplicationWithIdSchema)
+);
+
+export const UpdateStudentApplicationsResponseSchema = createApiResponseSchema(StudentResponseSchema);
+
+export const UpdateApplicationResponseSchema = createApiResponseSchema(ApplicationWithIdSchema);
+
+export const DeleteApplicationResponseSchema = SuccessResponseSchema;
+
+export const RefreshApplicationResponseSchema = createApiResponseSchema(ApplicationWithIdSchema);
+
+export const AdmissionsOverviewDataSchema = z.object({
+  admission: z.number().optional(),
+  rejection: z.number().optional(),
+  pending: z.number().optional(),
+  notYetSubmitted: z.number().optional()
+});
+
+export const GetAdmissionsResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.array(ApplicationPopulatedSchema).optional(),
+  result: z.array(ProgramCountItemSchema).optional()
+});
+
+export const GetAdmissionsOverviewResponseSchema = createApiResponseSchema(
+  AdmissionsOverviewDataSchema
+);
+
+export const GetApplicationConflictsResponseSchema = createApiResponseSchema(z.unknown());
+
+export const GetApplicationTaskDeltasResponseSchema = createApiResponseSchema(
+  z.array(
+    z.object({
+      program: ProgramWithIdSchema,
+      students: z.array(z.unknown())
+    })
+  )
+);
+
+export const UpdateStudentApplicationResultResponseSchema = createApiResponseSchema(
+  ApplicationWithIdSchema
+);
+
+// =========== Inferred types ===========
+
 /** Per-program count used in admissions response */
-export interface ProgramCountItem {
-  program_id?: string;
-  count?: number;
-}
+export type ProgramCountItem = z.infer<typeof ProgramCountItemSchema>;
 
 /** GET /api/applications */
-export type GetApplicationsResponse = ApiResponse<IApplicationPopulated[]>;
+export type GetApplicationsResponse = z.infer<typeof GetApplicationsResponseSchema>;
 
 /**
  * GET /api/applications/taiger-user/:userId
  * Non-standard: data is an object, not an array
  */
-export interface GetMyStudentsApplicationsResponse {
-  success: boolean;
-  data?: {
-    applications: IApplicationPopulated[];
-    user: IUserWithId;
-  };
-}
+export type GetMyStudentsApplicationsResponse = z.infer<
+  typeof GetMyStudentsApplicationsResponseSchema
+>;
 
 /** GET /api/applications/all/active/applications */
-export type GetActiveStudentsApplicationsResponse =
-  ApiResponse<IApplicationPopulated[]>;
+export type GetActiveStudentsApplicationsResponse = z.infer<
+  typeof GetActiveStudentsApplicationsResponseSchema
+>;
 
 /** GET /api/applications/student/:studentId */
-export type GetStudentApplicationsResponse = ApiResponse<IStudentResponse>;
+export type GetStudentApplicationsResponse = z.infer<typeof GetStudentApplicationsResponseSchema>;
 
 /** POST /api/applications/student/:studentId */
-export type CreateApplicationResponse = ApiResponse<IApplicationWithId[]>;
+export type CreateApplicationResponse = z.infer<typeof CreateApplicationResponseSchema>;
 
 /** PUT /api/applications/student/:studentId */
-export type UpdateStudentApplicationsResponse = ApiResponse<IStudentResponse>;
+export type UpdateStudentApplicationsResponse = z.infer<
+  typeof UpdateStudentApplicationsResponseSchema
+>;
 
 /** PUT /api/applications/student/:studentId/:application_id */
-export type UpdateApplicationResponse = ApiResponse<IApplicationWithId>;
+export type UpdateApplicationResponse = z.infer<typeof UpdateApplicationResponseSchema>;
 
 /** DELETE /api/applications/application/:applicationId */
-export type DeleteApplicationResponse = SuccessResponse;
+export type DeleteApplicationResponse = z.infer<typeof DeleteApplicationResponseSchema>;
 
 /** POST /api/applications/:applicationId/refresh */
-export type RefreshApplicationResponse = ApiResponse<IApplicationWithId>;
+export type RefreshApplicationResponse = z.infer<typeof RefreshApplicationResponseSchema>;
 
 /** Admission result summary from GET /api/admissions/overview */
-export interface AdmissionsOverviewData {
-  admission?: number;
-  rejection?: number;
-  pending?: number;
-  notYetSubmitted?: number;
-}
+export type AdmissionsOverviewData = z.infer<typeof AdmissionsOverviewDataSchema>;
 
 /**
  * GET /api/admissions
  * Non-standard: also returns `result` (per-program counts) alongside `data`
  */
-export interface GetAdmissionsResponse {
-  success: boolean;
-  data?: IApplicationPopulated[];
-  result?: ProgramCountItem[];
-}
+export type GetAdmissionsResponse = z.infer<typeof GetAdmissionsResponseSchema>;
 
 /** GET /api/admissions/overview */
-export type GetAdmissionsOverviewResponse =
-  ApiResponse<AdmissionsOverviewData>;
+export type GetAdmissionsOverviewResponse = z.infer<typeof GetAdmissionsOverviewResponseSchema>;
 
 /** GET /api/student-applications/conflicts */
-export type GetApplicationConflictsResponse = ApiResponse<unknown>;
+export type GetApplicationConflictsResponse = z.infer<typeof GetApplicationConflictsResponseSchema>;
 
 /**
  * GET /api/student-applications/deltas
  * Returns per-program student delta arrays
  */
-export type GetApplicationTaskDeltasResponse = ApiResponse<
-  Array<{ program: IProgramWithId; students: unknown[] }>
+export type GetApplicationTaskDeltasResponse = z.infer<
+  typeof GetApplicationTaskDeltasResponseSchema
 >;
 
 /** POST /api/account/applications/result/:studentId/:applicationId/:programId/:result */
-export type UpdateStudentApplicationResultResponse = ApiResponse<IApplicationWithId>;
+export type UpdateStudentApplicationResultResponse = z.infer<
+  typeof UpdateStudentApplicationResultResponseSchema
+>;
