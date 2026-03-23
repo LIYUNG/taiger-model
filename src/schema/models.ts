@@ -382,10 +382,15 @@ export type IBasedocumentationslinkSchema = z.infer<typeof Basedocumentationslin
 // =========== AllCourse Schema ===========
 
 export const AllCourseSchema = z.object({
-  updatedBy: z.string(),
+  updatedBy: z
+    .union([
+      z.string(),
+      z.object({ _id: z.string().optional() }).passthrough()
+    ])
+    .optional(),
   all_course_chinese: z.string(),
   all_course_english: z.string(),
-  description: z.string()
+  description: z.string().optional()
 });
 export type IAllCourseSchema = z.infer<typeof AllCourseSchema>;
 
