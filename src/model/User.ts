@@ -129,6 +129,7 @@ export interface IUser {
   birthday?: string;
   linkedIn?: string;
   lineId?: string;
+  slackId?: string;
   timezone?: string;
   isAccountActivated?: boolean;
   notification?: IUserNotification;
@@ -296,6 +297,7 @@ export const userSchema = new Schema(
     },
     linkedIn: String,
     lineId: String,
+    slackId: String,
     isAccountActivated: {
       type: Boolean,
       default: false
