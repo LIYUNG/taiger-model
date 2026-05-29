@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import { SuccessResponseSchema, createApiResponseSchema, createPaginatedResponseSchema } from './common';
 import { UserWithIdSchema } from './serialized';
 
 // =========== Schemas ===========
@@ -34,6 +34,13 @@ export const UsersOverviewDataSchema = z.object({
 export const GetUsersOverviewResponseSchema = createApiResponseSchema(UsersOverviewDataSchema);
 
 export const GetUsersResponseSchema = createApiResponseSchema(z.array(UserWithIdSchema));
+
+export const GetUsersPaginatedResponseSchema = createPaginatedResponseSchema(
+  UserWithIdSchema
+).extend({
+  page: z.number().optional(),
+  limit: z.number().optional()
+});
 
 export const GetUserResponseSchema = createApiResponseSchema(UserWithIdSchema);
 
@@ -70,6 +77,11 @@ export type GetUsersOverviewResponse = z.infer<typeof GetUsersOverviewResponseSc
 
 /** GET /api/users */
 export type GetUsersResponse = z.infer<typeof GetUsersResponseSchema>;
+
+/** GET /api/users?page=&limit= (paginated) */
+export type GetUsersPaginatedResponse = z.infer<
+  typeof GetUsersPaginatedResponseSchema
+>;
 
 /** GET /api/users/:user_id */
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;

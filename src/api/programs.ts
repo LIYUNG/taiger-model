@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import { SuccessResponseSchema, createApiResponseSchema, createPaginatedResponseSchema } from './common';
 import { ProgramWithIdSchema, StudentResponseSchema } from './serialized';
 
 // =========== Schemas ===========
@@ -77,7 +77,12 @@ export const ProgramsOverviewDataSchema = z.object({
   generatedAt: z.coerce.date().optional()
 });
 
-export const GetProgramsResponseSchema = createApiResponseSchema(z.array(ProgramWithIdSchema));
+export const GetProgramsResponseSchema = createPaginatedResponseSchema(
+  ProgramWithIdSchema
+).extend({
+  page: z.number().optional(),
+  limit: z.number().optional()
+});
 
 export const GetProgramsOverviewResponseSchema = createApiResponseSchema(ProgramsOverviewDataSchema);
 
