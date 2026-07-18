@@ -621,7 +621,7 @@ export const programModule = {
   url: String,
   isNC: {
     type: Boolean,
-    default: false
+    default: true
   },
   zipCode: {
     type: String,

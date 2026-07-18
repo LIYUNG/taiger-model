@@ -95,7 +95,7 @@ export type GetMyStudentsApplicationsResponse = z.infer<
   typeof GetMyStudentsApplicationsResponseSchema
 >;
 
-/** GET /api/applications/all/active/applications */
+/** GET /api/applications/applications */
 export type GetActiveStudentsApplicationsResponse = z.infer<
   typeof GetActiveStudentsApplicationsResponseSchema
 >;
