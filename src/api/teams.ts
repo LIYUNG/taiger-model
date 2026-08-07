@@ -38,10 +38,6 @@ export const TasksOverviewDataSchema = z.object({
 
 export const GetTeamMembersResponseSchema = createApiResponseSchema(z.array(UserWithIdSchema));
 
-export const GetArchivStudentsResponseSchema = createApiResponseSchema(
-  z.array(StudentResponseSchema)
-);
-
 export const GetStatisticsOverviewResponseSchema = createApiResponseSchema(
   StatisticsOverviewDataSchema
 );
@@ -90,9 +86,6 @@ export type TasksOverviewData = z.infer<typeof TasksOverviewDataSchema>;
 
 /** GET /api/teams */
 export type GetTeamMembersResponse = z.infer<typeof GetTeamMembersResponseSchema>;
-
-/** GET /api/teams/archiv/:TaiGerStaffId */
-export type GetArchivStudentsResponse = z.infer<typeof GetArchivStudentsResponseSchema>;
 
 /** GET /api/teams/statistics/overview */
 export type GetStatisticsOverviewResponse = z.infer<typeof GetStatisticsOverviewResponseSchema>;

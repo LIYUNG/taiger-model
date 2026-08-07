@@ -3,37 +3,21 @@ import { SuccessResponseSchema, createApiResponseSchema } from './common';
 import {
   InterviewWithIdSchema,
   InterviewSurveyResponseWithIdSchema,
-  StudentResponseSchema,
   AuditWithIdSchema
 } from './serialized';
 
-// =========== Schemas ===========
+// The list reads (`/`, `/open`, `/my-interviews`, `/interview/:program_id`,
+// `/interviews/:student_id`) were consolidated into the single paginated
+// endpoint `GET /api/interviews/all/paginated`, which takes `student_id` /
+// `program_id` / `isClosed` / `no_trainer` as filters. Their response schemas
+// went with them.
 
-export const GetInterviewsResponseSchema = createApiResponseSchema(z.array(InterviewWithIdSchema));
+// =========== Schemas ===========
 
 export const GetInterviewResponseSchema = z.object({
   success: z.boolean(),
   data: InterviewWithIdSchema.optional(),
   interviewAuditLog: z.array(AuditWithIdSchema).optional()
-});
-
-export const GetMyInterviewsResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.array(InterviewWithIdSchema).optional(),
-  students: z.array(StudentResponseSchema).optional(),
-  student: StudentResponseSchema.optional()
-});
-
-export const GetInterviewsByProgramIdResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.array(InterviewWithIdSchema).optional(),
-  count: z.number().optional()
-});
-
-export const GetInterviewsByStudentIdResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.array(InterviewWithIdSchema).optional(),
-  count: z.number().optional()
 });
 
 export const GetInterviewSurveyResponseSchema = createApiResponseSchema(
@@ -54,26 +38,11 @@ export const AddInterviewTrainingDateTimeResponseSchema = SuccessResponseSchema;
 
 // =========== Inferred types ===========
 
-/** GET /api/interviews, GET /api/interviews/open */
-export type GetInterviewsResponse = z.infer<typeof GetInterviewsResponseSchema>;
-
 /**
  * GET /api/interviews/:interview_id
  * Non-standard: also returns interviewAuditLog
  */
 export type GetInterviewResponse = z.infer<typeof GetInterviewResponseSchema>;
-
-/**
- * GET /api/interviews/my-interviews
- * Non-standard: returns students or student alongside data
- */
-export type GetMyInterviewsResponse = z.infer<typeof GetMyInterviewsResponseSchema>;
-
-/** GET /api/interviews/interview/:program_id */
-export type GetInterviewsByProgramIdResponse = z.infer<typeof GetInterviewsByProgramIdResponseSchema>;
-
-/** GET /api/interviews/interviews/:student_id */
-export type GetInterviewsByStudentIdResponse = z.infer<typeof GetInterviewsByStudentIdResponseSchema>;
 
 /** GET /api/interviews/:interview_id/survey */
 export type GetInterviewSurveyResponse = z.infer<typeof GetInterviewSurveyResponseSchema>;

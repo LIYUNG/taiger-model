@@ -7,7 +7,20 @@ import { CourseSchema } from '../schema/models';
 
 // --- All Courses (admin-managed global course catalogue) ---
 
-export const GetAllCoursesResponseSchema = createApiResponseSchema(z.array(AllCourseWithIdSchema));
+/**
+ * `GET /api/all-courses/paginated`. The unpaginated `GET /api/all-courses`
+ * was removed: the catalogue grows with every course anyone records, so the
+ * browser was being handed a table that only ever gets bigger.
+ */
+export const GetAllCoursesPaginatedResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.object({
+    courses: z.array(AllCourseWithIdSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number()
+  })
+});
 
 export const GetAllCourseResponseSchema = createApiResponseSchema(AllCourseWithIdSchema);
 
@@ -39,8 +52,13 @@ export const UpdateStudentCoursesResponseSchema = createApiResponseSchema(Course
 
 // =========== Inferred types ===========
 
-/** GET /api/all-courses */
-export type GetAllCoursesResponse = z.infer<typeof GetAllCoursesResponseSchema>;
+/** GET /api/all-courses/paginated */
+export type GetAllCoursesPaginatedResponse = z.infer<
+  typeof GetAllCoursesPaginatedResponseSchema
+>;
+
+/** One row of the course catalogue, as the API returns it. */
+export type AllCourseListItem = GetAllCoursesPaginatedResponse['data']['courses'][number];
 
 /** GET /api/all-courses/:courseId */
 export type GetAllCourseResponse = z.infer<typeof GetAllCourseResponseSchema>;

@@ -29,23 +29,30 @@ export const GetMyStudentsApplicationsResponseSchema = z.object({
     .optional()
 });
 
-export const GetActiveStudentsApplicationsResponseSchema = createApiResponseSchema(
-  z.array(ApplicationPopulatedSchema)
-);
+export const GetActiveStudentsApplicationsResponseSchema =
+  createApiResponseSchema(z.array(ApplicationPopulatedSchema));
 
-export const GetStudentApplicationsResponseSchema = createApiResponseSchema(StudentResponseSchema);
+export const GetStudentApplicationsResponseSchema = createApiResponseSchema(
+  StudentResponseSchema
+);
 
 export const CreateApplicationResponseSchema = createApiResponseSchema(
   z.array(ApplicationWithIdSchema)
 );
 
-export const UpdateStudentApplicationsResponseSchema = createApiResponseSchema(StudentResponseSchema);
+export const UpdateStudentApplicationsResponseSchema = createApiResponseSchema(
+  StudentResponseSchema
+);
 
-export const UpdateApplicationResponseSchema = createApiResponseSchema(ApplicationWithIdSchema);
+export const UpdateApplicationResponseSchema = createApiResponseSchema(
+  ApplicationWithIdSchema
+);
 
 export const DeleteApplicationResponseSchema = SuccessResponseSchema;
 
-export const RefreshApplicationResponseSchema = createApiResponseSchema(ApplicationWithIdSchema);
+export const RefreshApplicationResponseSchema = createApiResponseSchema(
+  ApplicationWithIdSchema
+);
 
 export const AdmissionsOverviewDataSchema = z.object({
   admission: z.number().optional(),
@@ -64,7 +71,55 @@ export const GetAdmissionsOverviewResponseSchema = createApiResponseSchema(
   AdmissionsOverviewDataSchema
 );
 
-export const GetApplicationConflictsResponseSchema = createApiResponseSchema(z.unknown());
+/**
+ * GET /api/admissions/overview-aggregates — every dataset the admissions
+ * overview page charts, aggregated server-side. Counts over the whole set, so
+ * no page of application rows can produce them.
+ */
+export const AdmissionsOverviewAggregatesSchema = z.object({
+  kpis: z.object({
+    offer: z.number(),
+    rejection: z.number(),
+    unknown: z.number(),
+    total: z.number(),
+    finalCount: z.number()
+  }),
+  byYear: z.array(
+    z.object({
+      year: z.string(),
+      offer: z.number(),
+      rejection: z.number(),
+      unknown: z.number(),
+      total: z.number()
+    })
+  ),
+  /** One row per student per year, not per application. */
+  byStudentYear: z.array(
+    z.object({
+      year: z.string(),
+      offer: z.number(),
+      rejected: z.number(),
+      pending: z.number(),
+      total: z.number()
+    })
+  ),
+  finalByCountry: z.array(z.object({ country: z.string(), count: z.number() })),
+  finalByCity: z.array(
+    z.object({
+      country: z.string(),
+      city: z.string(),
+      zipCode: z.string(),
+      count: z.number()
+    })
+  )
+});
+
+export const GetAdmissionsOverviewAggregatesResponseSchema =
+  createApiResponseSchema(AdmissionsOverviewAggregatesSchema);
+
+export const GetApplicationConflictsResponseSchema = createApiResponseSchema(
+  z.unknown()
+);
 
 export const GetApplicationTaskDeltasResponseSchema = createApiResponseSchema(
   z.array(
@@ -75,9 +130,8 @@ export const GetApplicationTaskDeltasResponseSchema = createApiResponseSchema(
   )
 );
 
-export const UpdateStudentApplicationResultResponseSchema = createApiResponseSchema(
-  ApplicationWithIdSchema
-);
+export const UpdateStudentApplicationResultResponseSchema =
+  createApiResponseSchema(ApplicationWithIdSchema);
 
 // =========== Inferred types ===========
 
@@ -85,7 +139,9 @@ export const UpdateStudentApplicationResultResponseSchema = createApiResponseSch
 export type ProgramCountItem = z.infer<typeof ProgramCountItemSchema>;
 
 /** GET /api/applications */
-export type GetApplicationsResponse = z.infer<typeof GetApplicationsResponseSchema>;
+export type GetApplicationsResponse = z.infer<
+  typeof GetApplicationsResponseSchema
+>;
 
 /**
  * GET /api/applications/taiger-user/:userId
@@ -101,10 +157,14 @@ export type GetActiveStudentsApplicationsResponse = z.infer<
 >;
 
 /** GET /api/applications/student/:studentId */
-export type GetStudentApplicationsResponse = z.infer<typeof GetStudentApplicationsResponseSchema>;
+export type GetStudentApplicationsResponse = z.infer<
+  typeof GetStudentApplicationsResponseSchema
+>;
 
 /** POST /api/applications/student/:studentId */
-export type CreateApplicationResponse = z.infer<typeof CreateApplicationResponseSchema>;
+export type CreateApplicationResponse = z.infer<
+  typeof CreateApplicationResponseSchema
+>;
 
 /** PUT /api/applications/student/:studentId */
 export type UpdateStudentApplicationsResponse = z.infer<
@@ -112,16 +172,24 @@ export type UpdateStudentApplicationsResponse = z.infer<
 >;
 
 /** PUT /api/applications/student/:studentId/:application_id */
-export type UpdateApplicationResponse = z.infer<typeof UpdateApplicationResponseSchema>;
+export type UpdateApplicationResponse = z.infer<
+  typeof UpdateApplicationResponseSchema
+>;
 
 /** DELETE /api/applications/application/:applicationId */
-export type DeleteApplicationResponse = z.infer<typeof DeleteApplicationResponseSchema>;
+export type DeleteApplicationResponse = z.infer<
+  typeof DeleteApplicationResponseSchema
+>;
 
 /** POST /api/applications/:applicationId/refresh */
-export type RefreshApplicationResponse = z.infer<typeof RefreshApplicationResponseSchema>;
+export type RefreshApplicationResponse = z.infer<
+  typeof RefreshApplicationResponseSchema
+>;
 
 /** Admission result summary from GET /api/admissions/overview */
-export type AdmissionsOverviewData = z.infer<typeof AdmissionsOverviewDataSchema>;
+export type AdmissionsOverviewData = z.infer<
+  typeof AdmissionsOverviewDataSchema
+>;
 
 /**
  * GET /api/admissions
@@ -130,10 +198,22 @@ export type AdmissionsOverviewData = z.infer<typeof AdmissionsOverviewDataSchema
 export type GetAdmissionsResponse = z.infer<typeof GetAdmissionsResponseSchema>;
 
 /** GET /api/admissions/overview */
-export type GetAdmissionsOverviewResponse = z.infer<typeof GetAdmissionsOverviewResponseSchema>;
+export type GetAdmissionsOverviewResponse = z.infer<
+  typeof GetAdmissionsOverviewResponseSchema
+>;
+
+/** GET /api/admissions/overview-aggregates */
+export type AdmissionsOverviewAggregates = z.infer<
+  typeof AdmissionsOverviewAggregatesSchema
+>;
+export type GetAdmissionsOverviewAggregatesResponse = z.infer<
+  typeof GetAdmissionsOverviewAggregatesResponseSchema
+>;
 
 /** GET /api/student-applications/conflicts */
-export type GetApplicationConflictsResponse = z.infer<typeof GetApplicationConflictsResponseSchema>;
+export type GetApplicationConflictsResponse = z.infer<
+  typeof GetApplicationConflictsResponseSchema
+>;
 
 /**
  * GET /api/student-applications/deltas

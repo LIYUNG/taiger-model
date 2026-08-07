@@ -20,6 +20,21 @@ export const DeleteTicketResponseSchema = SuccessResponseSchema;
 
 export const GetComplaintsResponseSchema = createApiResponseSchema(z.array(ComplaintWithIdSchema));
 
+/**
+ * `GET /api/complaints/paginated`. The unpaginated `GET /api/complaints`
+ * returns every ticket the caller may see — a table that only grows, since
+ * nothing is ever removed from it.
+ */
+export const GetComplaintsPaginatedResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.object({
+    tickets: z.array(ComplaintWithIdSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number()
+  })
+});
+
 export const GetComplaintResponseSchema = createApiResponseSchema(ComplaintWithIdSchema);
 
 export const CreateComplaintResponseSchema = createApiResponseSchema(ComplaintWithIdSchema);
@@ -51,6 +66,11 @@ export type DeleteTicketResponse = z.infer<typeof DeleteTicketResponseSchema>;
 
 /** GET /api/complaints */
 export type GetComplaintsResponse = z.infer<typeof GetComplaintsResponseSchema>;
+
+/** GET /api/complaints/paginated */
+export type GetComplaintsPaginatedResponse = z.infer<
+  typeof GetComplaintsPaginatedResponseSchema
+>;
 
 /** GET /api/complaints/:ticketId */
 export type GetComplaintResponse = z.infer<typeof GetComplaintResponseSchema>;
