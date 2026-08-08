@@ -14,16 +14,40 @@ export const SuccessResponseSchema = z.object({
  * Factory that wraps a data schema in the standard API response envelope.
  * Usage: createApiResponseSchema(z.array(UserWithIdSchema))
  */
-export const createApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+export const createApiResponseSchema = <T extends z.ZodTypeAny>(
+  dataSchema: T
+) =>
   SuccessResponseSchema.extend({
     data: dataSchema.optional()
+  });
+
+/**
+ * Factory for endpoints where "found nothing" is a normal 200, not a 404.
+ *
+ * Most reads either return their record or throw a 404, so
+ * `createApiResponseSchema` is right for them and keeps `data` non-null. A few
+ * legitimately answer 200 with nothing — a student who has no notes yet is not
+ * an error — and those send `"data": null` on the wire, because JSON has no
+ * `undefined`. Declaring them `.optional()` describes an absent key that never
+ * occurs; this says what is actually sent.
+ *
+ * Use it only where empty is a real, expected outcome. Reaching for it to
+ * silence a type error means the endpoint should probably 404 instead.
+ */
+export const createNullableApiResponseSchema = <T extends z.ZodTypeAny>(
+  dataSchema: T
+) =>
+  SuccessResponseSchema.extend({
+    data: dataSchema.nullish()
   });
 
 /**
  * Factory for paginated list responses.
  * Usage: createPaginatedResponseSchema(SomeItemSchema)
  */
-export const createPaginatedResponseSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
+export const createPaginatedResponseSchema = <T extends z.ZodTypeAny>(
+  itemSchema: T
+) =>
   createApiResponseSchema(z.array(itemSchema)).extend({
     total: z.number().optional()
   });

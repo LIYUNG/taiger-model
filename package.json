@@ -5,7 +5,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "umd:main": "dist/umd/index.js",
-  "types": "dist/types/index.d.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable",
@@ -19,7 +19,10 @@
     "package": "npm run build && npm pack",
     "test": "jest --no-cache --runInBand",
     "test:cov": "jest --coverage --no-cache --runInBand",
-    "addscope": "node tools/packagejson name @LIYUNG/taiger-model"
+    "addscope": "node tools/packagejson name @LIYUNG/taiger-model",
+    "local:install": "node scripts/local-release.js",
+    "local:verify": "node scripts/local-release.js --check",
+    "local:restore": "node scripts/local-release.js --restore"
   },
   "publishConfig": {
     "access": "public"

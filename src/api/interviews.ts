@@ -2,9 +2,9 @@ import { z } from 'zod';
 import { SuccessResponseSchema, createApiResponseSchema } from './common';
 import {
   InterviewWithIdSchema,
-  InterviewSurveyResponseWithIdSchema,
-  AuditWithIdSchema
+  InterviewSurveyResponseWithIdSchema
 } from './serialized';
+import { AuditLogEntrySchema } from './audit';
 
 // The list reads (`/`, `/open`, `/my-interviews`, `/interview/:program_id`,
 // `/interviews/:student_id`) were consolidated into the single paginated
@@ -17,7 +17,9 @@ import {
 export const GetInterviewResponseSchema = z.object({
   success: z.boolean(),
   data: InterviewWithIdSchema.optional(),
-  interviewAuditLog: z.array(AuditWithIdSchema).optional()
+  // Built by the same AuditService.getAuditLogs as GET /api/audit, so the
+  // refs on each row arrive populated.
+  interviewAuditLog: z.array(AuditLogEntrySchema).optional()
 });
 
 export const GetInterviewSurveyResponseSchema = createApiResponseSchema(
