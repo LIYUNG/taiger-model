@@ -119,7 +119,16 @@ export const GetSameProgramStudentsResponseSchema = createApiResponseSchema(
 
 export const GetProgramChangeRequestsResponseSchema = createApiResponseSchema(z.array(z.unknown()));
 
-export const ReviewProgramChangeRequestsResponseSchema = SuccessResponseSchema;
+/** POST /api/programs/:programId/change-requests — acknowledgement only. */
+export const SubmitProgramChangeRequestsResponseSchema = SuccessResponseSchema;
+
+/**
+ * The review endpoint answers with the updated request, not a bare
+ * acknowledgement — this used to declare `SuccessResponseSchema`, so the
+ * payload it has always sent was undocumented.
+ */
+export const ReviewProgramChangeRequestsResponseSchema =
+  createApiResponseSchema(z.unknown());
 
 export const RefreshProgramResponseSchema = UpdateProgramResponseSchema;
 
@@ -179,6 +188,11 @@ export type GetSameProgramStudentsResponse = z.infer<typeof GetSameProgramStuden
 /** GET /api/programs/:programId/change-requests */
 export type GetProgramChangeRequestsResponse = z.infer<
   typeof GetProgramChangeRequestsResponseSchema
+>;
+
+/** POST /api/programs/:programId/change-requests */
+export type SubmitProgramChangeRequestsResponse = z.infer<
+  typeof SubmitProgramChangeRequestsResponseSchema
 >;
 
 /** POST /api/programs/review-changes/:requestId */

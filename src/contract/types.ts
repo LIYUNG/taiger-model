@@ -41,6 +41,16 @@ export interface RouteContract<
   response: Response;
   /** Defaults to 200. */
   successStatus?: number;
+  /**
+   * Media type of the success payload, when it is not JSON.
+   *
+   * A handful of endpoints stream a file — a template, an admission letter, an
+   * exported PDF. They still have one path, one set of params and one set of
+   * middleware, so they belong in the contract; only the body is not JSON. The
+   * generator documents these as a binary string, and a client fetches them
+   * through its blob transport rather than `callApi`.
+   */
+  successContentType?: string;
 }
 
 /**

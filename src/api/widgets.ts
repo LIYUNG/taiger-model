@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import { CourseStudentRefSchema } from './courses';
 import { CourseAnalysisSchema } from '../schema/models';
 
 // =========== Schemas ===========
@@ -24,7 +25,16 @@ export const TaigerChatAssistantResponseSchema = createApiResponseSchema(z.strin
 
 export const TranscriptAnalyserResponseSchema = createApiResponseSchema(CourseAnalysisSchema);
 
-export const AnalyzedFileDownloadResponseSchema = WidgetDownloadJsonResponseSchema;
+/**
+ * `GET /api/courses/transcript/v2/:studentId` — the same non-standard payload as
+ * the widget download, plus the populated student the analysis belongs to. The
+ * widget route serves an admin's own file and has no student to attach, which is
+ * why only this one carries the field.
+ */
+export const AnalyzedFileDownloadResponseSchema =
+  WidgetDownloadJsonResponseSchema.extend({
+    student: CourseStudentRefSchema.optional()
+  });
 
 export const GetExpenseResponseSchema = createApiResponseSchema(z.unknown());
 
@@ -57,7 +67,7 @@ export type TaigerChatAssistantResponse = z.infer<typeof TaigerChatAssistantResp
 /** POST /api/courses/transcript/v2/:studentId/:language */
 export type TranscriptAnalyserResponse = z.infer<typeof TranscriptAnalyserResponseSchema>;
 
-/** GET /api/courses/transcript/v2/:user_id */
+/** GET /api/courses/transcript/v2/:studentId */
 export type AnalyzedFileDownloadResponse = z.infer<typeof AnalyzedFileDownloadResponseSchema>;
 
 /** GET /api/expenses/users/:taiger_user_id */

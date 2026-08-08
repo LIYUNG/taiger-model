@@ -48,7 +48,80 @@ export const UpdateApplicationResponseSchema = createApiResponseSchema(
   ApplicationWithIdSchema
 );
 
-export const DeleteApplicationResponseSchema = SuccessResponseSchema;
+/**
+ * The delete handler answers `{ success, data: { message } }`, not the bare
+ * `{ success, message }` this used to declare — the message was in the wrong
+ * place, and nothing checked it.
+ */
+export const DeleteApplicationResponseSchema = createApiResponseSchema(
+  z.object({ message: z.string() })
+);
+
+/**
+ * `GET /api/applications/applications/paginated` — one page of applications
+ * plus the unpaginated match count. Rows are the same populated applications
+ * the unpaginated reads return; only the envelope differs.
+ */
+export const GetStudentsApplicationsPaginatedResponseSchema =
+  createApiResponseSchema(
+    z.object({
+      applications: z.array(ApplicationPopulatedSchema),
+      total: z.number(),
+      page: z.number(),
+      limit: z.number()
+    })
+  );
+
+/**
+ * One bar of the "Open Applications Distribution" chart. Computed in the DB, so
+ * the endpoint returns the buckets rather than the applications behind them.
+ */
+export const ApplicationsDeadlineDistributionBucketSchema = z.object({
+  /** Deadline label, e.g. "2025/01/15" or "2025-Rolling". */
+  name: z.string(),
+  /** Decided applications with this deadline. */
+  active: z.number(),
+  /** Undecided applications with this deadline. */
+  potentials: z.number()
+});
+
+export const GetApplicationsDeadlineDistributionResponseSchema =
+  createApiResponseSchema(z.array(ApplicationsDeadlineDistributionBucketSchema));
+
+/** Aggregated application counts for one TaiGer user's students. */
+export const MyStudentsApplicationsStatsSchema = z.object({
+  totalStudents: z.number(),
+  totalApplications: z.number(),
+  decidedYesApplications: z.number(),
+  decidedNoApplications: z.number(),
+  undecidedApplications: z.number(),
+  submittedApplications: z.number(),
+  pendingApplications: z.number()
+});
+
+export const GetMyStudentsApplicationsStatsResponseSchema =
+  createApiResponseSchema(
+    z.object({
+      // `null` when the id belongs to no user — the endpoint still answers with
+      // the stats, so this is not a 404.
+      user: UserWithIdSchema.nullable(),
+      stats: MyStudentsApplicationsStatsSchema
+    })
+  );
+
+/** A distinct program row for the "Programs Update Status" tabs. */
+export const ApplicationProgramUpdateStatusRowSchema = z.object({
+  program_id: z.string(),
+  school: z.string(),
+  program_name: z.string(),
+  degree: z.string(),
+  semester: z.string(),
+  whoupdated: z.string().optional(),
+  updatedAt: z.coerce.date().optional()
+});
+
+export const GetApplicationProgramsUpdateStatusResponseSchema =
+  createApiResponseSchema(z.array(ApplicationProgramUpdateStatusRowSchema));
 
 export const RefreshApplicationResponseSchema = createApiResponseSchema(
   ApplicationWithIdSchema
@@ -179,6 +252,41 @@ export type UpdateApplicationResponse = z.infer<
 /** DELETE /api/applications/application/:applicationId */
 export type DeleteApplicationResponse = z.infer<
   typeof DeleteApplicationResponseSchema
+>;
+
+/** GET /api/applications/applications/paginated */
+export type GetStudentsApplicationsPaginatedResponse = z.infer<
+  typeof GetStudentsApplicationsPaginatedResponseSchema
+>;
+
+/** One bar of the open-applications deadline chart. */
+export type ApplicationsDeadlineDistributionBucket = z.infer<
+  typeof ApplicationsDeadlineDistributionBucketSchema
+>;
+
+/** GET /api/applications/distribution */
+export type GetApplicationsDeadlineDistributionResponse = z.infer<
+  typeof GetApplicationsDeadlineDistributionResponseSchema
+>;
+
+/** Aggregated application counts for one TaiGer user's students. */
+export type MyStudentsApplicationsStats = z.infer<
+  typeof MyStudentsApplicationsStatsSchema
+>;
+
+/** GET /api/applications/taiger-user/:userId/stats */
+export type GetMyStudentsApplicationsStatsResponse = z.infer<
+  typeof GetMyStudentsApplicationsStatsResponseSchema
+>;
+
+/** A distinct program row for the "Programs Update Status" tabs. */
+export type ApplicationProgramUpdateStatusRow = z.infer<
+  typeof ApplicationProgramUpdateStatusRowSchema
+>;
+
+/** GET /api/applications/program-update-status */
+export type GetApplicationProgramsUpdateStatusResponse = z.infer<
+  typeof GetApplicationProgramsUpdateStatusResponseSchema
 >;
 
 /** POST /api/applications/:applicationId/refresh */

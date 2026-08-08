@@ -7,3 +7,8 @@ export * from './misc';
 export * from './core';
 export * from './catalogue';
 export * from './accounts';
+export * from './courses';
+export * from './applications';
+export * from './programs';
+export * from './account';
+export * from './documentations';

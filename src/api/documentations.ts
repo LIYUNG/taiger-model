@@ -28,8 +28,16 @@ export const DeleteDocumentationResponseSchema = SuccessResponseSchema;
 
 // --- Docs Pages ---
 
+/**
+ * `GET /api/docs/pages/:category` — the page, or `{}` when the category has no
+ * page yet.
+ *
+ * Declared as the fully-optional page rather than a union with an empty-record
+ * schema: `{}` satisfies it, every consumer already has to handle a missing
+ * field, and `z.never()` is not expressible in OpenAPI.
+ */
 export const GetDocspageResponseSchema = createApiResponseSchema(
-  z.union([DocspageWithIdSchema, z.record(z.never())])
+  DocspageWithIdSchema.partial()
 );
 
 export const UpdateDocspageResponseSchema = createApiResponseSchema(DocspageWithIdSchema);
@@ -42,9 +50,9 @@ export const GetAllInternalDocumentationsResponseSchema = createApiResponseSchem
 
 export const GetInternaldocResponseSchema = createApiResponseSchema(InternaldocWithIdSchema);
 
-export const GetInternalDocumentationPageResponseSchema = createApiResponseSchema(
-  z.union([DocspageWithIdSchema, z.record(z.never())])
-);
+/** Same "page or `{}`" shape as the category page above. */
+export const GetInternalDocumentationPageResponseSchema =
+  createApiResponseSchema(DocspageWithIdSchema.partial());
 
 export const UpdateInternalDocumentationPageResponseSchema = createApiResponseSchema(
   DocspageWithIdSchema
