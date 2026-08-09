@@ -550,6 +550,9 @@ export const DocumentthreadMessageFileSchema = z.object({
 export type IDocumentthreadMessageFileSchema = z.infer<typeof DocumentthreadMessageFileSchema>;
 
 export const DocumentthreadMessageSchema = z.object({
+  // Every message is a subdocument, so it has an id — the client deletes and
+  // edits by it, and this schema did not say it existed.
+  _id: z.string().optional(),
   user_id: z.string().optional(),
   message: z.string().optional(),
   createdAt: z.coerce.date().optional(),

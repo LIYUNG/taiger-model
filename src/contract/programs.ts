@@ -108,6 +108,11 @@ export const programsContract = {
     path: '/api/programs',
     tags: ['Programs'],
     summary: 'Create a program',
+    // No `body`: the create form posts a whole program document and the
+    // handler writes it wholesale. Declaring one means committing to the exact
+    // field list of a 130-field model — worth doing, but only after the form's
+    // fields are checked against `ProgramSchema`, since zod strips what it does
+    // not know about.
     response: CreateProgramResponseSchema,
     successStatus: 201
   }),
@@ -180,6 +185,11 @@ export const programsContract = {
     tags: ['Programs'],
     summary: 'Update a program',
     params: ProgramParams,
+    // No `body`, deliberately: the change-request approval flow sends
+    // `changeRequestId` alongside the program fields, and the version-control
+    // mongoose plugin (`utils/modelHelper/versionControl.ts`) reads it off the
+    // update to link the new version to the request. A schema listing only
+    // program fields would strip it and silently break that link.
     response: UpdateProgramResponseSchema
   }),
 

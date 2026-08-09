@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import {
+  SuccessResponseSchema,
+  createApiResponseSchema,
+  createNullableApiResponseSchema
+} from './common';
 import {
   DocumentthreadWithIdSchema,
   DocumentthreadPopulatedSchema,
@@ -19,10 +23,12 @@ export const ThreadFavoriteDataSchema = z.object({
 export const GetMessagesThreadResponseSchema = z.object({
   success: z.boolean(),
   data: DocumentthreadPopulatedSchema.optional(),
-  similarThreads: z.array(DocumentthreadPopulatedSchema).optional(),
-  agents: z.array(AgentWithIdSchema).optional(),
-  editors: z.array(EditorWithIdSchema).optional(),
-  threadAuditLog: z.array(AuditWithIdSchema).optional(),
+  // Like the thread's own ref fields, these are populated with per-endpoint
+  // `select` lists — a two-field agent summary here, not a whole agent.
+  similarThreads: z.array(z.unknown()).nullish(),
+  agents: z.array(z.unknown()).optional(),
+  editors: z.array(z.unknown()).optional(),
+  threadAuditLog: z.array(z.unknown()).optional(),
   deadline: z.unknown().optional(),
   conflict_list: z.array(z.unknown()).optional()
 });
@@ -31,8 +37,12 @@ export const GetActiveThreadsResponseSchema = createApiResponseSchema(
   z.array(DocumentthreadPopulatedSchema)
 );
 
+/**
+ * `GET /api/document-threads/student-threads/:studentId` wraps the list in a
+ * `threads` key; this used to declare the bare array.
+ */
 export const GetThreadsByStudentResponseSchema = createApiResponseSchema(
-  z.array(DocumentthreadPopulatedSchema)
+  z.object({ threads: z.array(DocumentthreadPopulatedSchema) })
 );
 
 export const GetMyStudentThreadsResponseSchema = createApiResponseSchema(
@@ -46,13 +56,42 @@ export const GetMyStudentThreadMetricsResponseSchema = createApiResponseSchema(z
 
 export const PutThreadFavoriteResponseSchema = createApiResponseSchema(ThreadFavoriteDataSchema);
 
-export const SetFileFinalResponseSchema = createApiResponseSchema(DocumentthreadWithIdSchema);
-
-export const InitGeneralThreadResponseSchema = createApiResponseSchema(DocumentthreadWithIdSchema);
-
-export const InitApplicationThreadResponseSchema = createApiResponseSchema(
-  DocumentthreadWithIdSchema
+/**
+ * `PUT /api/document-threads/:messagesThreadId/:studentId` answers with just the
+ * two fields it changed, not the whole thread this used to declare — the client
+ * repaints the row from them.
+ */
+export const SetFileFinalResponseSchema = createApiResponseSchema(
+  z.object({
+    isFinalVersion: z.boolean().optional(),
+    updatedAt: z.coerce.date().optional()
+  })
 );
+
+/**
+ * The entry pushed onto the student's `generaldocs_threads` /
+ * `doc_modification_thread` — a reference to the new thread, not the thread
+ * document itself, which is what these used to declare.
+ */
+export const ThreadRefEntrySchema = z
+  .object({
+    /**
+     * A Mongoose subdocument id, which serialises to this string. The entry is
+     * sent straight off the parent document, so it is not narrowed first.
+     */
+    _id: z.unknown().optional(),
+    doc_thread_id: z.unknown().optional(),
+    isFinalVersion: z.boolean().optional(),
+    latest_message_left_by_id: z.string().nullish(),
+    updatedAt: z.coerce.date().optional(),
+    createdAt: z.coerce.date().optional()
+  });
+
+export const InitGeneralThreadResponseSchema =
+  createApiResponseSchema(ThreadRefEntrySchema);
+
+export const InitApplicationThreadResponseSchema =
+  createApiResponseSchema(ThreadRefEntrySchema);
 
 export const SubmitMessageResponseSchema = createApiResponseSchema(DocumentthreadWithIdSchema);
 
@@ -62,29 +101,152 @@ export const DeleteProgramSpecificFileThreadResponseSchema = SuccessResponseSche
 
 export const DeleteMessageInThreadResponseSchema = SuccessResponseSchema;
 
-export const UpdateEssayWriterResponseSchema = createApiResponseSchema(DocumentthreadWithIdSchema);
-
-export const UploadDocumentThreadImageResponseSchema = createApiResponseSchema(
-  DocumentthreadWithIdSchema
+/**
+ * The handler re-reads the thread fully populated before sending it, so this is
+ * the populated shape — not the id-bearing one it used to declare.
+ */
+export const UpdateEssayWriterResponseSchema = createApiResponseSchema(
+  DocumentthreadPopulatedSchema
 );
+
+/** The URL the uploaded image is served from, not the thread. */
+export const UploadDocumentThreadImageResponseSchema =
+  createApiResponseSchema(z.string());
 
 export const PutOriginAuthorConfirmedResponseSchema = createApiResponseSchema(
   DocumentthreadWithIdSchema
 );
 
-export const IgnoreMessageThreadResponseSchema = createApiResponseSchema(DocumentthreadWithIdSchema);
+/** The driver's update acknowledgement, not the thread. */
+export const IgnoreMessageThreadResponseSchema = createApiResponseSchema(
+  z.unknown()
+);
 
-export const GetCheckDocumentPatternResponseSchema = createApiResponseSchema(z.unknown());
+/**
+ * `GET /api/document-threads/pattern/check/...` answers with the verdict at the
+ * top level, not under `data`.
+ */
+export const GetCheckDocumentPatternResponseSchema = createApiResponseSchema(
+  z.unknown()
+).extend({
+  isPassed: z.boolean().optional(),
+  /** Why the document failed, when it did. */
+  reason: z.unknown().optional(),
+  message: z.string().optional()
+});
 
-export const GetSurveyInputsResponseSchema = createApiResponseSchema(SurveyInputWithIdSchema);
+/**
+ * `GET /api/document-threads/:messagesThreadId/survey-inputs` answers with the
+ * **thread**, with the general and program-specific survey answers attached —
+ * not a survey input, which is what this used to declare.
+ */
+export const GetSurveyInputsResponseSchema = createApiResponseSchema(
+  z.object({
+    surveyInputs: z.object({
+      general: SurveyInputWithIdSchema.optional(),
+      /** `false` when the thread has no program, so no specific survey exists. */
+      specific: z.union([SurveyInputWithIdSchema, z.literal('')]).optional()
+    })
+  }).catchall(z.unknown())
+);
 
 export const PostSurveyInputResponseSchema = createApiResponseSchema(SurveyInputWithIdSchema);
 
-export const PutSurveyInputResponseSchema = createApiResponseSchema(SurveyInputWithIdSchema);
+/** `null` when the id matched nothing — the handler does not 404. */
+export const PutSurveyInputResponseSchema = createNullableApiResponseSchema(
+  SurveyInputWithIdSchema
+);
 
 export const DeleteSurveyInputResponseSchema = SuccessResponseSchema;
 
+
+// --- Dashboard lists (paginated + per-tab counts) ---
+
+/**
+ * One row of the CVMLRL / Essay dashboards.
+ *
+ * The rows are slim and pre-computed in the aggregation (deadline, document
+ * name, message-derived fields, lock status), so this is `catchall` rather than
+ * the full thread document.
+ */
+export const OpenTaskRowSchema = z
+  .object({
+    id: z.string(),
+    student_id: z.unknown().optional(),
+    application_id: z.string().nullish(),
+    user_id: z.string().nullish(),
+    show: z.boolean().optional(),
+    isFinalVersion: z.boolean().optional(),
+    flag_by_user_id: z.array(z.string()).optional(),
+    file_type: z.string().nullish(),
+    latest_message_left_by_id: z.string().nullish()
+  })
+  .catchall(z.unknown());
+
+export const GetActiveThreadsPaginatedResponseSchema = createApiResponseSchema(
+  z.object({
+    threads: z.array(OpenTaskRowSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number()
+  })
+);
+
+/** Per-tab thread counts for the CVMLRL / Essay dashboards. */
+export const ActiveThreadsCountsSchema = z.object({
+  all: z.number(),
+  closed: z.number(),
+  withdraw: z.number(),
+  in_progress: z.number(),
+  no_input: z.number(),
+  no_writer: z.number(),
+  new_message: z.number(),
+  fav: z.number(),
+  followup: z.number(),
+  pending_progress: z.number()
+});
+
+export const GetActiveThreadsCountsResponseSchema = createApiResponseSchema(
+  ActiveThreadsCountsSchema
+);
+
+/**
+ * `GET /api/document-threads/overview/taiger-user/:userId` — the user's threads
+ * and the user themselves, so the page can title itself without a second call.
+ */
+export const GetMyStudentsThreadsResponseSchema = createApiResponseSchema(
+  z.object({
+    threads: z.array(z.unknown()),
+    user: z.unknown().optional()
+  })
+);
+
+/** `GET /api/document-threads/overview/my-student-metrics`. */
+export const GetMyStudentMetricsResponseSchema = createApiResponseSchema(
+  z.object({ students: z.array(z.unknown()) })
+);
+
+/**
+ * `POST /api/document-threads/:studentId/forward-documents`.
+ *
+ * `status` distinguishes a send from the "some documents have no file" answer,
+ * which the client turns into a confirm-and-retry.
+ */
+export const ForwardStudentDocumentsResponseSchema = createApiResponseSchema(
+  z
+    .object({
+      status: z.string().optional(),
+      missing: z.array(z.string()).optional()
+    })
+    .catchall(z.unknown())
+);
+
+/** `PUT /api/document-threads/:messagesThreadId/additional-information`. */
+export const UpdateAdditionalInformationResponseSchema =
+  createApiResponseSchema(z.object({ additionalInformation: z.string() }));
+
 // =========== Inferred types ===========
+
 
 /** Favorite toggle result */
 export type ThreadFavoriteData = z.infer<typeof ThreadFavoriteDataSchema>;
@@ -166,3 +328,39 @@ export type PutSurveyInputResponse = z.infer<typeof PutSurveyInputResponseSchema
 
 /** DELETE /api/document-threads/survey-input/:surveyId */
 export type DeleteSurveyInputResponse = z.infer<typeof DeleteSurveyInputResponseSchema>;
+
+/** One row of the CVMLRL / Essay dashboards. */
+export type OpenTaskRow = z.infer<typeof OpenTaskRowSchema>;
+
+/** GET /api/document-threads/overview/{all,taiger-user/:userId}/paginated */
+export type GetActiveThreadsPaginatedResponse = z.infer<
+  typeof GetActiveThreadsPaginatedResponseSchema
+>;
+
+/** Per-tab thread counts. */
+export type ActiveThreadsCounts = z.infer<typeof ActiveThreadsCountsSchema>;
+
+/** GET /api/document-threads/overview/{all,taiger-user/:userId}/counts */
+export type GetActiveThreadsCountsResponse = z.infer<
+  typeof GetActiveThreadsCountsResponseSchema
+>;
+
+/** GET /api/document-threads/overview/taiger-user/:userId */
+export type GetMyStudentsThreadsResponse = z.infer<
+  typeof GetMyStudentsThreadsResponseSchema
+>;
+
+/** GET /api/document-threads/overview/my-student-metrics */
+export type GetMyStudentMetricsResponse = z.infer<
+  typeof GetMyStudentMetricsResponseSchema
+>;
+
+/** POST /api/document-threads/:studentId/forward-documents */
+export type ForwardStudentDocumentsResponse = z.infer<
+  typeof ForwardStudentDocumentsResponseSchema
+>;
+
+/** PUT /api/document-threads/:messagesThreadId/additional-information */
+export type UpdateAdditionalInformationResponse = z.infer<
+  typeof UpdateAdditionalInformationResponseSchema
+>;

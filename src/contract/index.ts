@@ -14,3 +14,6 @@ export * from './account';
 export * from './documentations';
 export * from './communications';
 export * from './crm';
+export * from './students';
+export * from './aiAssist';
+export * from './documentThreads';

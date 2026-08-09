@@ -272,10 +272,13 @@ export const DocumentthreadPopulatedSchema = z.object({
   student_id: z.union([StudentResponseSchema, z.string()]),
   program_id: z.union([ProgramWithIdSchema, z.string()]).optional(),
   application_id: z.union([ApplicationPopulatedSchema, z.string()]).optional(),
-  outsourced_user_id: z.array(UserWithIdSchema).optional(),
-  pin_by_user_id: z.array(UserWithIdSchema).optional(),
-  flag_by_user_id: z.array(UserWithIdSchema).optional(),
-  essayReviewerIds: z.array(UserWithIdSchema).optional(),
+  // These three are refs whose populate `select` differs per endpoint: some
+  // reads return raw ids, others a two-field summary, others the full user.
+  // Saying "an array of full users" was true for none of them.
+  outsourced_user_id: z.array(z.unknown()).optional(),
+  pin_by_user_id: z.array(z.unknown()).optional(),
+  flag_by_user_id: z.array(z.unknown()).optional(),
+  essayReviewerIds: z.array(z.unknown()).optional(),
   file_type: z.string(),
   isFinalVersion: z.boolean().optional(),
   isOriginAuthorDeclarationConfirmedByStudent: z.boolean().optional(),

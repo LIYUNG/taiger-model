@@ -23,3 +23,4 @@ export * from './portals';
 export * from './notes';
 export * from './permissions';
 export * from './widgets';
+export * from './aiAssist';

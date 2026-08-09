@@ -1,9 +1,6 @@
 import { z } from 'zod';
 import { SuccessResponseSchema, createApiResponseSchema } from './common';
-import {
-  StudentResponseSchema,
-  BasedocumentationslinkWithIdSchema
-} from './serialized';
+import { StudentResponseSchema } from './serialized';
 
 // =========== Schemas ===========
 
@@ -30,19 +27,57 @@ export const GetStudentResponseSchema = createApiResponseSchema(
   StudentResponseSchema
 );
 
-export const GetStudentDocLinksResponseSchema = z.object({
-  success: z.boolean(),
-  data: StudentResponseSchema.optional(),
-  basedocumentationlinks: z.array(BasedocumentationslinkWithIdSchema).optional()
+/**
+ * `GET /api/students/doc-links/:studentId`.
+ *
+ * The handler sends `base_docs_link`, `survey_link` and `audit` beside the
+ * student. This declared a `basedocumentationlinks` key instead — a name no
+ * response has ever carried — and none of the other three.
+ */
+export const GetStudentDocLinksResponseSchema = createApiResponseSchema(
+  StudentResponseSchema
+).extend({
+  base_docs_link: z.unknown().optional(),
+  survey_link: z.unknown().optional(),
+  audit: z.unknown().optional()
 });
 
+/** `GET /api/students/doc-links` — the list, with the shared links beside it. */
 export const GetStudentsAndDocLinksResponseSchema = createApiResponseSchema(
+  z.array(StudentResponseSchema)
+).extend({
+  base_docs_link: z.unknown().optional()
+});
+
+/**
+ * `POST /api/students/archiv/:studentId` answers with the caller's remaining
+ * dashboard students — an array, not the one student this used to declare.
+ */
+export const UpdateArchivStudentsResponseSchema = createApiResponseSchema(
   z.array(StudentResponseSchema)
 );
 
-export const UpdateArchivStudentsResponseSchema = createApiResponseSchema(
-  StudentResponseSchema
+/** `GET /api/students/v3/paginated` — one page plus the unpaginated count. */
+export const GetStudentsV3PaginatedResponseSchema = createApiResponseSchema(
+  z.object({
+    students: z.array(StudentResponseSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number()
+  })
 );
+
+/**
+ * `GET /api/students/batch`.
+ *
+ * Ids that are not ObjectIds are skipped rather than failing the request; when
+ * any were skipped the response says so.
+ */
+export const GetStudentsByIdsResponseSchema = createApiResponseSchema(
+  z.array(StudentResponseSchema)
+).extend({
+  invalidIds: z.array(z.string()).optional()
+});
 
 export const UpdateStudentAgentsResponseSchema = createApiResponseSchema(
   StudentResponseSchema
@@ -56,8 +91,14 @@ export const UpdateStudentAttributesResponseSchema = createApiResponseSchema(
   StudentResponseSchema
 );
 
+/**
+ * `POST /api/students/doc-links` answers with the saved link under
+ * `helper_link`, not the bare acknowledgement this used to declare.
+ */
 export const UpdateDocumentationHelperLinkResponseSchema =
-  SuccessResponseSchema;
+  SuccessResponseSchema.extend({
+    helper_link: z.unknown().optional()
+  });
 
 export const UploadStudentFileResponseSchema = createApiResponseSchema(
   StudentResponseSchema
@@ -88,6 +129,16 @@ export const GetStudentUniAssistResponseSchema = createApiResponseSchema(
 );
 
 // =========== Inferred types ===========
+
+/** GET /api/students/v3/paginated */
+export type GetStudentsV3PaginatedResponse = z.infer<
+  typeof GetStudentsV3PaginatedResponseSchema
+>;
+
+/** GET /api/students/batch */
+export type GetStudentsByIdsResponse = z.infer<
+  typeof GetStudentsByIdsResponseSchema
+>;
 
 /** GET /api/students, GET /api/students/v3 */
 export type GetStudentsResponse = z.infer<typeof GetStudentsResponseSchema>;
