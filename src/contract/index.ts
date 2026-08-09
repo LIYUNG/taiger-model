@@ -12,3 +12,5 @@ export * from './applications';
 export * from './programs';
 export * from './account';
 export * from './documentations';
+export * from './communications';
+export * from './crm';
