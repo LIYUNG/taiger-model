@@ -10,7 +10,10 @@ import {
   GetCourseKeywordsetsResponseSchema,
   UpdateKeywordsetResponseSchema
 } from '../api/courses';
-import { GetPortalCredentialsResponseSchema } from '../api/portals';
+import {
+  CreatePortalCredentialsResponseSchema,
+  GetPortalCredentialsResponseSchema
+} from '../api/portals';
 import { GetQueryStudentsResultsResponseSchema } from '../api/search';
 import { GetExpenseResponseSchema } from '../api/widgets';
 import { createApiResponseSchema } from '../api/common';
@@ -88,7 +91,9 @@ export const portalCredentialsContract = {
       studentId: z.string().min(1),
       applicationId: z.string().min(1)
     }),
-    response: GetPortalCredentialsResponseSchema
+    // The updated application, not the credentials read above — this pointed at
+    // the GET's shape and described a payload the handler has never sent.
+    response: CreatePortalCredentialsResponseSchema
   })
 } as const;
 

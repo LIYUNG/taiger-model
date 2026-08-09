@@ -108,11 +108,25 @@ export const programsContract = {
     path: '/api/programs',
     tags: ['Programs'],
     summary: 'Create a program',
-    // No `body`: the create form posts a whole program document and the
-    // handler writes it wholesale. Declaring one means committing to the exact
-    // field list of a 130-field model — worth doing, but only after the form's
-    // fields are checked against `ProgramSchema`, since zod strips what it does
-    // not know about.
+    // Only the fields the handler itself dereferences are named. It calls
+    // `.trim()` on `school` and `program_name` without a guard, so a body
+    // missing either is a 500 today; naming them makes it a 400.
+    //
+    // `.passthrough()` is the whole point of the shape: the create form posts a
+    // ~130-field program document that the handler writes wholesale, and a
+    // closed schema would silently strip every field not listed here. Mongoose
+    // still drops anything `ProgramSchema` does not define, so the model — not
+    // a duplicated field list — remains the authority on what a program is.
+    body: z
+      .object({
+        school: z.string().min(1),
+        program_name: z.string().min(1),
+        // Read for the duplicate check below; absent means "not specified",
+        // which is a valid (and matchable) program.
+        degree: z.string().optional(),
+        semester: z.string().optional()
+      })
+      .passthrough(),
     response: CreateProgramResponseSchema,
     successStatus: 201
   }),

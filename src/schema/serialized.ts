@@ -267,18 +267,49 @@ export const DocumentthreadWithIdSchema = z.object({
 export type IDocumentthreadWithId = z.infer<typeof DocumentthreadWithIdSchema>;
 
 /** Document thread with populated refs — student_id can be object or string */
+/** A user on a thread: the id when unpopulated, this summary when populated. */
+export const ThreadUserRefSchema = z.union([
+  z.string(),
+  z
+    .object({
+      _id: z.string(),
+      firstname: z.string().nullish(),
+      lastname: z.string().nullish(),
+      role: z.string().nullish(),
+      pictureUrl: z.string().nullish()
+    })
+    .catchall(z.unknown())
+]);
+
+export type ThreadUserRef = z.infer<typeof ThreadUserRefSchema>;
+
+/** A thread ref that came back populated — the only form carrying a name. */
+export type PopulatedThreadUser = Exclude<ThreadUserRef, string>;
+
+/**
+ * Keep only the populated refs. `outsourced_user_id` and friends hold raw ids
+ * on reads whose `populate` did not include them, so a caller that wants a
+ * name has to drop those rather than render `undefined undefined`.
+ */
+export const populatedThreadUsers = (
+  refs: readonly ThreadUserRef[] | undefined | null
+): PopulatedThreadUser[] =>
+  (refs ?? []).filter(
+    (ref): ref is PopulatedThreadUser => typeof ref !== 'string'
+  );
+
 export const DocumentthreadPopulatedSchema = z.object({
   _id: z.string(),
   student_id: z.union([StudentResponseSchema, z.string()]),
   program_id: z.union([ProgramWithIdSchema, z.string()]).optional(),
   application_id: z.union([ApplicationPopulatedSchema, z.string()]).optional(),
-  // These three are refs whose populate `select` differs per endpoint: some
-  // reads return raw ids, others a two-field summary, others the full user.
-  // Saying "an array of full users" was true for none of them.
-  outsourced_user_id: z.array(z.unknown()).optional(),
-  pin_by_user_id: z.array(z.unknown()).optional(),
-  flag_by_user_id: z.array(z.unknown()).optional(),
-  essayReviewerIds: z.array(z.unknown()).optional(),
+  // Refs whose populate `select` differs per endpoint: some reads return raw
+  // ids, others the small user summary below. Saying "an array of full users"
+  // was true for neither.
+  outsourced_user_id: z.array(ThreadUserRefSchema).optional(),
+  pin_by_user_id: z.array(ThreadUserRefSchema).optional(),
+  flag_by_user_id: z.array(ThreadUserRefSchema).optional(),
+  essayReviewerIds: z.array(ThreadUserRefSchema).optional(),
   file_type: z.string(),
   isFinalVersion: z.boolean().optional(),
   isOriginAuthorDeclarationConfirmedByStudent: z.boolean().optional(),
@@ -295,6 +326,25 @@ export type ICommunicationWithId = z.infer<typeof CommunicationWithIdSchema>;
 
 export const InterviewWithIdSchema = InterviewSchema.extend({ _id: z.string() });
 export type IInterviewWithId = z.infer<typeof InterviewWithIdSchema>;
+
+/**
+ * An interview as the single-interview reads publish it: the refs arrive
+ * populated (that is the whole point of those endpoints — a client renders the
+ * trainer's name and the program's school), so declaring them as id strings
+ * described a payload none of them has ever sent.
+ *
+ * The populated shapes stay open: each endpoint's `select` differs, and the
+ * fields a caller can count on are the ones listed here.
+ */
+export const InterviewPopulatedSchema = InterviewSchema.extend({
+  _id: z.string(),
+  student_id: z.unknown().optional(),
+  trainer_id: z.array(z.unknown()).optional(),
+  thread_id: z.unknown().optional(),
+  program_id: z.unknown().optional(),
+  event_id: z.unknown().optional()
+});
+export type IInterviewPopulated = z.infer<typeof InterviewPopulatedSchema>;
 
 export const InterviewSurveyResponseWithIdSchema = InterviewSurveyResponseSchema.extend({
   _id: z.string()

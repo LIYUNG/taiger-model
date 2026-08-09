@@ -1,7 +1,12 @@
 import { z } from 'zod';
-import { SuccessResponseSchema, createApiResponseSchema } from './common';
+import {
+  SuccessResponseSchema,
+  createApiResponseSchema,
+  createNullableApiResponseSchema
+} from './common';
 import {
   InterviewWithIdSchema,
+  InterviewPopulatedSchema,
   InterviewSurveyResponseWithIdSchema
 } from './serialized';
 import { AuditLogEntrySchema } from './audit';
@@ -16,25 +21,30 @@ import { AuditLogEntrySchema } from './audit';
 
 export const GetInterviewResponseSchema = z.object({
   success: z.boolean(),
-  data: InterviewWithIdSchema.optional(),
+  data: InterviewPopulatedSchema.optional(),
   // Built by the same AuditService.getAuditLogs as GET /api/audit, so the
   // refs on each row arrive populated.
   interviewAuditLog: z.array(AuditLogEntrySchema).optional()
 });
 
-export const GetInterviewSurveyResponseSchema = createApiResponseSchema(
-  InterviewSurveyResponseWithIdSchema
-);
+/** `data` is null for an interview whose survey has not been filled in yet. */
+export const GetInterviewSurveyResponseSchema =
+  createNullableApiResponseSchema(InterviewSurveyResponseWithIdSchema);
 
 export const UpdateInterviewSurveyResponseSchema = createApiResponseSchema(
   InterviewSurveyResponseWithIdSchema
 );
 
-export const CreateInterviewResponseSchema = SuccessResponseSchema;
+/** Answers with the created interview so the client can navigate to it. */
+export const CreateInterviewResponseSchema = createApiResponseSchema(
+  InterviewPopulatedSchema
+);
 
 export const DeleteInterviewResponseSchema = SuccessResponseSchema;
 
-export const UpdateInterviewResponseSchema = createApiResponseSchema(InterviewWithIdSchema);
+export const UpdateInterviewResponseSchema = createApiResponseSchema(
+  InterviewPopulatedSchema
+);
 
 export const AddInterviewTrainingDateTimeResponseSchema = SuccessResponseSchema;
 

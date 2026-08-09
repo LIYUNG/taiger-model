@@ -14,6 +14,8 @@ export const PortalCredentialsStudentSchema = z.object({
 
 export const GetPortalCredentialsResponseSchema = z.object({
   success: z.boolean(),
+  /** Carried on a 200 that reports `success: false`. */
+  message: z.string().optional(),
   data: z
     .object({
       applications: z.array(ApplicationWithIdSchema),

@@ -20,6 +20,7 @@ import {
   ConfirmEventResponseSchema,
   DeleteEventResponseSchema,
   GetBookedEventsResponseSchema,
+  GetEventsPaginatedResponseSchema,
   GetEventsResponseSchema,
   PostEventResponseSchema,
   UpdateEventResponseSchema
@@ -42,9 +43,13 @@ import {
 } from '../api/teams';
 import {
   GetProgramTicketResponseSchema,
-  GetProgramTicketsResponseSchema
+  GetProgramTicketsResponseSchema,
+  GetTicketsOverviewResponseSchema
 } from '../api/tickets';
-import { createApiResponseSchema } from '../api/common';
+import {
+  SuccessResponseSchema,
+  createApiResponseSchema
+} from '../api/common';
 import { defineContract } from './types';
 
 /**
@@ -117,6 +122,20 @@ export const admissionsContract = {
     summary: 'Get the pre-aggregated admissions overview datasets',
     response: GetAdmissionsOverviewAggregatesResponseSchema
   }),
+  getAdmissionLetter: defineContract({
+    method: 'get',
+    path: '/api/admissions/:studentId/admission/:fileName',
+    tags: ['Admissions'],
+    summary: 'Download an admission letter',
+    params: z.object({
+      studentId: z.string().min(1),
+      fileName: z.string().min(1)
+    }),
+    // Streams the S3 object as an attachment, so a client fetches it through
+    // its blob transport rather than `callApi`.
+    successContentType: 'application/octet-stream',
+    response: SuccessResponseSchema
+  }),
   getAdmissionsYear: defineContract({
     method: 'get',
     path: '/api/admissions/:applications_year',
@@ -142,6 +161,13 @@ export const allCoursesContract = {
     path: '/api/all-courses/paginated',
     tags: ['Courses DB'],
     summary: 'Get one page of the course catalogue',
+    query: z.object({
+      page: z.string().optional(),
+      limit: z.string().optional(),
+      search: z.string().optional(),
+      sortBy: z.string().optional(),
+      sortOrder: z.string().optional()
+    }),
     response: GetAllCoursesPaginatedResponseSchema
   }),
   getCourse: defineContract({
@@ -178,7 +204,16 @@ export const ticketsContract = {
     path: '/api/tickets/overview',
     tags: ['Tickets'],
     summary: 'Get the ticket overview',
-    response: GetProgramTicketsResponseSchema
+    query: z.object({
+      type: z.string().optional(),
+      page: z.string().optional(),
+      limit: z.string().optional(),
+      search: z.string().optional(),
+      sortBy: z.string().optional(),
+      sortOrder: z.string().optional(),
+      status: z.string().optional()
+    }),
+    response: GetTicketsOverviewResponseSchema
   }),
   getProgramTickets: defineContract({
     method: 'get',
@@ -355,13 +390,24 @@ export const eventsContract = {
     path: '/api/events/paginated',
     tags: ['Events'],
     summary: 'Get one page of events',
-    response: GetEventsResponseSchema
+    query: z.object({
+      page: z.string().optional(),
+      limit: z.string().optional(),
+      search: z.string().optional(),
+      sortBy: z.string().optional(),
+      sortOrder: z.string().optional()
+    }),
+    response: GetEventsPaginatedResponseSchema
   }),
   getEvents: defineContract({
     method: 'get',
     path: '/api/events',
     tags: ['Events'],
     summary: 'Get events',
+    query: z.object({
+      startTime: z.string().optional(),
+      endTime: z.string().optional()
+    }),
     response: GetEventsResponseSchema
   }),
   postEvent: defineContract({

@@ -10,6 +10,18 @@ export const GetProgramTicketsResponseSchema = createApiResponseSchema(z.array(T
 
 export const GetProgramTicketResponseSchema = createApiResponseSchema(z.array(TicketWithIdSchema));
 
+/**
+ * `GET /api/tickets/overview` — one page of tickets. The counters sit beside
+ * `data` rather than inside it, which is unusual for this API but is what the
+ * handler has always sent and what the overview table pages on.
+ */
+export const GetTicketsOverviewResponseSchema =
+  GetProgramTicketsResponseSchema.extend({
+    total: z.number(),
+    page: z.number(),
+    limit: z.number()
+  });
+
 export const CreateTicketResponseSchema = createApiResponseSchema(TicketWithIdSchema);
 
 export const UpdateTicketResponseSchema = createApiResponseSchema(TicketWithIdSchema);
@@ -51,6 +63,9 @@ export const DeleteComplaintResponseSchema = SuccessResponseSchema;
 
 /** GET /api/tickets */
 export type GetProgramTicketsResponse = z.infer<typeof GetProgramTicketsResponseSchema>;
+
+/** GET /api/tickets/overview */
+export type GetTicketsOverviewResponse = z.infer<typeof GetTicketsOverviewResponseSchema>;
 
 /** GET /api/tickets?type=&program_id= (single ticket) */
 export type GetProgramTicketResponse = z.infer<typeof GetProgramTicketResponseSchema>;

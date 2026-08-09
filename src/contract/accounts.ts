@@ -58,6 +58,18 @@ export const usersContract = {
     path: '/api/users',
     tags: ['Users'],
     summary: 'Get users',
+    /** The users table's filters; unpaginated when `page`/`limit` are absent. */
+    query: z.object({
+      role: z.string().optional(),
+      agents: z.string().optional(),
+      editors: z.string().optional(),
+      archiv: z.string().optional(),
+      page: z.string().optional(),
+      limit: z.string().optional(),
+      search: z.string().optional(),
+      sortBy: z.string().optional(),
+      sortOrder: z.string().optional()
+    }),
     response: GetUsersResponseSchema
   }),
   addUser: defineContract({
@@ -264,6 +276,14 @@ export const complaintsContract = {
     path: '/api/complaints/paginated',
     tags: ['Complaints'],
     summary: 'Get one page of support tickets',
+    query: z.object({
+      page: z.string().optional(),
+      limit: z.string().optional(),
+      search: z.string().optional(),
+      sortBy: z.string().optional(),
+      sortOrder: z.string().optional(),
+      status: z.string().optional()
+    }),
     response: GetComplaintsPaginatedResponseSchema
   }),
   getComplaints: defineContract({

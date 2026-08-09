@@ -1,6 +1,11 @@
 import { z } from 'zod';
-import { SuccessResponseSchema, createApiResponseSchema } from './common';
-import { StudentResponseSchema } from './serialized';
+import {
+  SuccessResponseSchema,
+  createApiResponseSchema,
+  createNullableApiResponseSchema
+} from './common';
+import { ApplicationWithIdSchema, StudentResponseSchema } from './serialized';
+import { UserProfileItemSchema } from '../schema/models';
 
 // =========== Schemas ===========
 
@@ -100,28 +105,43 @@ export const UpdateDocumentationHelperLinkResponseSchema =
     helper_link: z.unknown().optional()
   });
 
+/**
+ * The profile-document endpoints answer with the single `profile` entry they
+ * touched, not with the student that owns it. Declaring a whole student here
+ * was wrong in the same way for all four of them: every consumer reads
+ * `data.status` / `data.path`, which a student does not have.
+ */
 export const UploadStudentFileResponseSchema = createApiResponseSchema(
-  StudentResponseSchema
+  UserProfileItemSchema
 );
 
-export const DeleteStudentFileResponseSchema = SuccessResponseSchema;
-
-export const UploadVPDFileResponseSchema = createApiResponseSchema(
-  StudentResponseSchema
-);
-
-export const DeleteVPDFileResponseSchema = SuccessResponseSchema;
-
-export const SetAsNotNeededResponseSchema = createApiResponseSchema(
-  StudentResponseSchema
-);
-
-export const SetUniAssistPaidResponseSchema = createApiResponseSchema(
-  StudentResponseSchema
+export const DeleteStudentFileResponseSchema = createApiResponseSchema(
+  UserProfileItemSchema
 );
 
 export const UpdateProfileDocStatusResponseSchema = createApiResponseSchema(
-  StudentResponseSchema
+  UserProfileItemSchema
+);
+
+/**
+ * The uni-assist endpoints answer with the application they updated — the VPD
+ * file, its payment flag and its necessity all live on the application, not on
+ * the student.
+ */
+export const UploadVPDFileResponseSchema = createApiResponseSchema(
+  ApplicationWithIdSchema
+);
+
+export const DeleteVPDFileResponseSchema = createNullableApiResponseSchema(
+  ApplicationWithIdSchema
+);
+
+export const SetAsNotNeededResponseSchema = createNullableApiResponseSchema(
+  ApplicationWithIdSchema
+);
+
+export const SetUniAssistPaidResponseSchema = createNullableApiResponseSchema(
+  ApplicationWithIdSchema
 );
 
 export const GetStudentUniAssistResponseSchema = createApiResponseSchema(

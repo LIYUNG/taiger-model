@@ -17,3 +17,4 @@ export * from './crm';
 export * from './students';
 export * from './aiAssist';
 export * from './documentThreads';
+export * from './widgets';

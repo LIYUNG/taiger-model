@@ -145,7 +145,8 @@ export interface IUserProfileItem {
   required: boolean;
   path?: string;
   feedback?: string;
-  updatedAt?: Date;
+  /** Null on a row that was created but never touched — see UserProfileItemSchema. */
+  updatedAt?: Date | null;
 }
 
 export interface IUserGeneraldocsThread {

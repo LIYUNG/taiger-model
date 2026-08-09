@@ -123,7 +123,9 @@ export const UserProfileItemSchema = z.object({
   required: z.boolean(),
   path: z.string().optional(),
   feedback: z.string().optional(),
-  updatedAt: z.coerce.date().optional()
+  // Nullish, not optional: a profile row created before it was ever touched
+  // stores `updatedAt: null`, and that null goes on the wire as-is.
+  updatedAt: z.coerce.date().nullish()
 });
 export type IUserProfileItemSchema = z.infer<typeof UserProfileItemSchema>;
 

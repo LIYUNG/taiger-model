@@ -28,6 +28,19 @@ export const DeleteEventResponseSchema = GetEventsResponseSchema;
 
 export const UpdateOfficehoursResponseSchema = SuccessResponseSchema;
 
+/**
+ * `GET /api/events/paginated` — one page plus the unpaginated match count. The
+ * contract used to reuse the unpaginated response, which describes a bare array.
+ */
+export const GetEventsPaginatedResponseSchema = createApiResponseSchema(
+  z.object({
+    events: z.array(EventWithIdSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number()
+  })
+);
+
 // =========== Inferred types ===========
 
 /**
@@ -65,3 +78,8 @@ export type DeleteEventResponse = z.infer<typeof DeleteEventResponseSchema>;
 
 /** PUT /api/account/profile/officehours/:user_id */
 export type UpdateOfficehoursResponse = z.infer<typeof UpdateOfficehoursResponseSchema>;
+
+/** GET /api/events/paginated */
+export type GetEventsPaginatedResponse = z.infer<
+  typeof GetEventsPaginatedResponseSchema
+>;

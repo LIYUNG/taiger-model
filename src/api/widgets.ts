@@ -36,7 +36,17 @@ export const AnalyzedFileDownloadResponseSchema =
     student: CourseStudentRefSchema.optional()
   });
 
-export const GetExpenseResponseSchema = createApiResponseSchema(z.unknown());
+/**
+ * `GET /api/expenses/users/:taiger_user_id` — the staff member plus the
+ * students whose expenses they account for. Both are role-shaped documents the
+ * handler merges from two queries, so the rows stay open.
+ */
+export const GetExpenseResponseSchema = createApiResponseSchema(
+  z.object({
+    students: z.array(z.unknown()),
+    the_user: z.unknown()
+  })
+);
 
 // =========== Inferred types ===========
 
