@@ -194,10 +194,23 @@ export const GetApplicationConflictsResponseSchema = createApiResponseSchema(
   z.unknown()
 );
 
+/**
+ * `GET /api/student-applications/deltas`
+ *
+ * The program here is the five-field summary the handler destructures, not a
+ * whole program document — the row exists to say *which* program a set of
+ * student deltas belongs to.
+ */
 export const GetApplicationTaskDeltasResponseSchema = createApiResponseSchema(
   z.array(
     z.object({
-      program: ProgramWithIdSchema,
+      program: z.object({
+        _id: z.string(),
+        school: z.string(),
+        program_name: z.string(),
+        degree: z.string().nullish(),
+        semester: z.string().nullish()
+      }),
       students: z.array(z.unknown())
     })
   )
