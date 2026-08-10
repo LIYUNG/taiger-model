@@ -48,20 +48,44 @@ const ThreadStudentParams = z.object({
 });
 
 /** The dashboards share one filter/sort/page query. */
+/**
+ * The thread-dashboard query, taken from what the DAO actually reads
+ * (`parseActiveThreadsQuery` in `dao/documentthread.dao.ts`).
+ *
+ * This matters more than usual: `parseQuery` **strips** what the schema does
+ * not name, so a key missing here is a filter that silently stops working. The
+ * first draft guessed at `tab` / `isFinalVersion` / `fileType` / `studentId` /
+ * `editorId` / `agentId` — none of which the DAO has ever read — while omitting
+ * `category` and `excludeFileType`, which every dashboard tab depends on.
+ *
+ * Everything is a string because it arrives from a URL. `file_type` and
+ * `excludeFileType` accept a comma-separated list, and the array form covers a
+ * repeated `?file_type=a&file_type=b`.
+ */
 const ThreadListQuery = z.object({
   page: z.string().optional(),
   limit: z.string().optional(),
   search: z.string().optional(),
   sortBy: z.string().optional(),
   sortOrder: z.string().optional(),
-  tab: z.string().optional(),
-  /** Whose threads to score the "new message" flag against. */
+  /** Whose threads to score the viewer-dependent tabs against. */
   viewerId: z.string().optional(),
-  isFinalVersion: z.string().optional(),
-  fileType: z.string().optional(),
-  studentId: z.string().optional(),
-  editorId: z.string().optional(),
-  agentId: z.string().optional()
+  /** Which tab: all / new_message / fav / followup / no_writer / ... */
+  category: z.string().optional(),
+
+  file_type: z.union([z.string(), z.array(z.string())]).optional(),
+  /** Types hidden unless the viewer is outsourced on the thread. */
+  excludeFileType: z.union([z.string(), z.array(z.string())]).optional(),
+  // Column filters, matched against the rendered table values.
+  name: z.string().optional(),
+  document_name: z.string().optional(),
+  lang: z.string().optional(),
+  status: z.string().optional(),
+  editorName: z.string().optional(),
+  agentName: z.string().optional(),
+  essayWriterName: z.string().optional(),
+  /** Year/month text match on the displayed deadline, e.g. "2025/09". */
+  deadline: z.string().optional()
 });
 
 /**
@@ -126,7 +150,15 @@ export const documentThreadsOverviewContract = {
     path: '/api/document-threads/overview/all',
     tags: ['Document Threads'],
     summary: 'Get every active thread',
-    query: ThreadListQuery,
+    // A different query from the paginated reads below: this one goes through
+    // `DocumentthreadQueryBuilder`, not `parseActiveThreadsQuery`.
+    query: z.object({
+      file_type: z.union([z.string(), z.array(z.string())]).optional(),
+      isFinalVersion: z.string().optional(),
+      hasOutsourcedUserId: z.string().optional(),
+      hasMessages: z.string().optional(),
+      outsourcedUserId: z.string().optional()
+    }),
     response: GetActiveThreadsResponseSchema
   }),
 
