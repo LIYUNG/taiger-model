@@ -20,7 +20,7 @@ import {
   UpdateCRMLeadResponseSchema,
   UpdateCRMMeetingResponseSchema
 } from '../api/crm';
-import { defineContract } from './types';
+import { defineContract, paginationQuery } from './types';
 
 /**
  * The sales CRM: leads, their tags and notes, meetings, deals and the pipeline
@@ -45,6 +45,38 @@ const DeleteLeadTagsBodySchema = z.object({
   tagId: z.string().optional(),
   tags: z.union([z.string(), z.array(z.string())]).optional(),
   tag: z.string().optional()
+});
+
+/**
+ * Which tab of the meeting dashboard is being asked for.
+ *
+ * A server concern rather than a client filter: the client used to fetch every
+ * meeting and slice it three ways in the browser, which is what made the
+ * endpoint unpaginatable. `active` is "not archived" — the tab is labelled
+ * "All meetings", which it has never been.
+ */
+export const CRMMeetingScope = z.enum(['active', 'unassigned', 'archived']);
+
+/**
+ * `summary` is JSONB and `gist` is a paragraph of prose, so it is deliberately
+ * not offered as a sort key — the column that renders it has sorting disabled
+ * on the client to match.
+ */
+export const CRMMeetingsQuerySchema = z.object({
+  ...paginationQuery,
+  scope: CRMMeetingScope.optional(),
+  sortBy: z.enum(['date', 'title', 'leadFullName']).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
+  /**
+   * Free-text search across the meeting's title, date, lead, summary,
+   * keywords, speakers and participants.
+   *
+   * Server-side because the client holds one page: a filter applied in the
+   * browser would search the ten rows on screen and report that as the result.
+   * Capped and trimmed — it reaches an ILIKE, and an empty string would match
+   * every row while looking like a filter.
+   */
+  q: z.string().trim().min(1).max(200).optional()
 });
 
 export const crmContract = {
@@ -170,7 +202,11 @@ export const crmContract = {
     method: 'get',
     path: '/api/crm/meetings',
     tags: ['CRM'],
-    summary: 'Get the meeting list',
+    summary: 'Get a page of meetings',
+    description:
+      'Paginated, newest first by default. `scope` selects the dashboard tab; ' +
+      'the response carries all three tab counts regardless of which is asked for.',
+    query: CRMMeetingsQuerySchema,
     response: GetCRMMeetingsResponseSchema
   }),
 

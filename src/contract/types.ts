@@ -109,3 +109,36 @@ export const buildPath = (
     }
     return encodeURIComponent(String(value));
   });
+
+/**
+ * A positive integer query param.
+ *
+ * Deliberately not `z.coerce.number()`: coercion runs `Number(value)`, and
+ * `Number(['2'])` is 2 — so `?page[]=2` would pass, which is exactly the array
+ * case this exists to reject. Requiring a string first makes the check real.
+ *
+ * The union accepts its own output, so parsing twice is the same as parsing
+ * once. `mountContract` validates the query on the way in and writes the result
+ * back to `req.query`; a handler that then calls `parseQuery` again would
+ * otherwise be handed the number this transform produced and reject it.
+ *
+ * Shared rather than copied: this lived in `audit.ts` and the next paginated
+ * endpoint would have duplicated it, comment and all — which is how the
+ * `import X = require()` interop comments spread (see BACKEND_GUIDE B10).
+ */
+export const positiveIntParam = z.union([
+  z.string().regex(/^\d+$/, 'must be a positive integer').transform(Number),
+  z.number().int().positive()
+]);
+
+/**
+ * The `page` / `limit` pair every paginated endpoint takes.
+ *
+ * `limit` is capped: it reaches a SQL `LIMIT`, so an uncapped one is a way to
+ * ask the server for the whole table through an endpoint that exists to stop
+ * exactly that.
+ */
+export const paginationQuery = {
+  page: positiveIntParam.optional(),
+  limit: positiveIntParam.pipe(z.number().max(100)).optional()
+};

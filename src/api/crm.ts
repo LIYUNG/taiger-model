@@ -211,7 +211,39 @@ export const CreateLeadFromStudentResponseSchema = z.object({
   data: CRMLeadItemSchema.optional()
 });
 
-export const GetCRMMeetingsResponseSchema = createApiResponseSchema(z.array(CRMMeetingItemSchema));
+/**
+ * The three tab counts the meeting dashboard shows.
+ *
+ * Over the whole table, or over the search results when `q` is given — the
+ * tabs have to agree with what a search actually returns, or clicking one
+ * shows fewer rows than its own label promised.
+ */
+export const CRMMeetingCountsSchema = z.object({
+  /** Not archived. The dashboard labels this tab "All meetings"; it is not. */
+  active: z.number(),
+  /** Not archived and not yet linked to a lead. */
+  unassigned: z.number(),
+  archived: z.number()
+});
+
+/**
+ * `GET /api/crm/meetings` — one page, plus the counts the dashboard's tabs show.
+ *
+ * This used to be a bare array of every meeting ever recorded, a table that
+ * only grows. The counts are part of the response rather than three more
+ * requests because the tabs display all three at once regardless of which one
+ * is selected — deriving them from the page would make them count the page.
+ */
+export const GetCRMMeetingsResponseSchema = createApiResponseSchema(
+  z.object({
+    meetings: z.array(CRMMeetingItemSchema),
+    /** Rows matching the current `scope`, before `page`/`limit`. */
+    total: z.number(),
+    page: z.number(),
+    limit: z.number(),
+    counts: CRMMeetingCountsSchema
+  })
+);
 
 export const GetCRMMeetingResponseSchema = createApiResponseSchema(CRMMeetingItemSchema);
 
