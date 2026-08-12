@@ -107,6 +107,29 @@ if (!tarball) {
 const tarballPath = path.join(outDir, tarball);
 console.log(`\nPacked ${tarball}`);
 
+/**
+ * Drop a consumer's bundler pre-bundle after replacing the package.
+ *
+ * Vite pre-bundles dependencies into `node_modules/.vite/deps` and keys the
+ * cache on the *declared* version, which `--no-save` never changes. So a dev
+ * server keeps serving the previous build of this package: newly added exports
+ * are `undefined` and deleted ones still resolve. That failure reads like a
+ * bug in the consuming code -- `Cannot read properties of undefined (reading
+ * 'path')` from a contract that plainly exists on disk -- which is a long way
+ * from the cause.
+ *
+ * Cheap to delete and rebuilt on the next dev-server start, so it is removed
+ * unconditionally rather than tested for staleness.
+ */
+const clearBundlerCaches = (dir) => {
+  for (const rel of ['node_modules/.vite', 'node_modules/.cache']) {
+    const target = path.join(dir, rel);
+    if (!fs.existsSync(target)) continue;
+    fs.rmSync(target, { recursive: true, force: true });
+    console.log(`  cleared ${rel}`);
+  }
+};
+
 // ---------------------------------------------------------------- install
 const failures = [];
 
@@ -116,6 +139,7 @@ for (const dir of consumers) {
   // --no-save: this is a test install, not a dependency change. The consumer's
   // package.json and lockfile keep pointing at the registry.
   run(`npm install "${tarballPath}" --no-save`, dir);
+  clearBundlerCaches(dir);
 
   if (has('--check')) {
     const check = CHECK_COMMANDS[label(dir)];

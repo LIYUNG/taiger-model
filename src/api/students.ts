@@ -13,21 +13,6 @@ export const GetStudentsResponseSchema = createApiResponseSchema(
   z.array(StudentResponseSchema)
 );
 
-/**
- * GET /api/students/active/paginated — one page of the same rows
- * `/api/students/active` returns whole. `total` is the unpaginated match count,
- * computed with the same filters as the rows.
- */
-export const GetActiveStudentsPaginatedResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.object({
-    students: z.array(StudentResponseSchema),
-    total: z.number(),
-    page: z.number(),
-    limit: z.number()
-  })
-});
-
 export const GetStudentResponseSchema = createApiResponseSchema(
   StudentResponseSchema
 );
@@ -164,10 +149,6 @@ export type GetStudentsByIdsResponse = z.infer<
 export type GetStudentsResponse = z.infer<typeof GetStudentsResponseSchema>;
 
 /** GET /api/students/active */
-/** GET /api/students/active/paginated */
-export type GetActiveStudentsPaginatedResponse = z.infer<
-  typeof GetActiveStudentsPaginatedResponseSchema
->;
 
 /** GET /api/students/:studentId */
 export type GetStudentResponse = z.infer<typeof GetStudentResponseSchema>;

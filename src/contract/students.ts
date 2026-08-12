@@ -3,7 +3,6 @@ import { z } from 'zod';
 import {
   DeleteStudentFileResponseSchema,
   DeleteVPDFileResponseSchema,
-  GetActiveStudentsPaginatedResponseSchema,
   GetStudentDocLinksResponseSchema,
   GetStudentResponseSchema,
   GetStudentsAndDocLinksResponseSchema,
@@ -49,7 +48,20 @@ const PaginatedStudentListQuery = StudentListQuery.extend({
   limit: z.string().optional(),
   search: z.string().optional(),
   sortBy: z.string().optional(),
-  sortOrder: z.string().optional()
+  sortOrder: z.string().optional(),
+  /**
+   * Include each student's applications (programmes populated) and courses.
+   *
+   * Opt-in. The hydrate becomes `$unwind` -> `$lookup` programs -> `$group` ->
+   * `$replaceRoot` per page, and most callers list students without reading
+   * their applications; defaulting it on would bill them for a join they throw
+   * away.
+   */
+  withApplications: z.string().optional(),
+  /** Every application submitted and none admitted. */
+  atRisk: z.string().optional(),
+  /** Has at least one application marked as the final enrolment. */
+  hasFinalEnrolment: z.string().optional()
 });
 
 export const studentsContract = {
@@ -92,27 +104,12 @@ export const studentsContract = {
       'The same rows as `/api/students/active/paginated`, grouped so a ' +
       "student's identity appears once rather than on every application " +
       'line. No `page` / `limit`: an export is the whole filtered set.',
-    query: PaginatedStudentListQuery.omit({ page: true, limit: true }).extend({
-      atRisk: z.string().optional(),
-      hasFinalEnrolment: z.string().optional()
-    }),
+    query: PaginatedStudentListQuery.omit({ page: true, limit: true }),
     // Streamed as an attachment, so a client fetches it through its blob
     // transport rather than `callApi` (which would try to parse a JSON
     // envelope this route never sends).
     successContentType: 'text/csv',
     response: SuccessResponseSchema
-  }),
-
-  getActiveStudentsPaginated: defineContract({
-    method: 'get',
-    path: '/api/students/active/paginated',
-    tags: ['Students'],
-    summary: 'Get one page of active students',
-    query: PaginatedStudentListQuery.extend({
-      atRisk: z.string().optional(),
-      hasFinalEnrolment: z.string().optional()
-    }),
-    response: GetActiveStudentsPaginatedResponseSchema
   }),
 
   updateDocumentationHelperLink: defineContract({
