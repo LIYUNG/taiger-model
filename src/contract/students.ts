@@ -21,6 +21,7 @@ import {
   UploadStudentFileResponseSchema,
   UploadVPDFileResponseSchema
 } from '../api/students';
+import { SuccessResponseSchema } from '../api/common';
 import { defineContract } from './types';
 
 /**
@@ -80,6 +81,26 @@ export const studentsContract = {
       ids: z.string().optional()
     }),
     response: GetStudentsByIdsResponseSchema
+  }),
+
+  exportActiveStudentApplicationsCsv: defineContract({
+    method: 'get',
+    path: '/api/students/active/applications/export.csv',
+    tags: ['Students'],
+    summary: 'Export students and their applications as CSV',
+    description:
+      'The same rows as `/api/students/active/paginated`, grouped so a ' +
+      "student's identity appears once rather than on every application " +
+      'line. No `page` / `limit`: an export is the whole filtered set.',
+    query: PaginatedStudentListQuery.omit({ page: true, limit: true }).extend({
+      atRisk: z.string().optional(),
+      hasFinalEnrolment: z.string().optional()
+    }),
+    // Streamed as an attachment, so a client fetches it through its blob
+    // transport rather than `callApi` (which would try to parse a JSON
+    // envelope this route never sends).
+    successContentType: 'text/csv',
+    response: SuccessResponseSchema
   }),
 
   getActiveStudentsPaginated: defineContract({
