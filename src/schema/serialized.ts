@@ -55,34 +55,12 @@ const officehoursDaySchema = z.object({
   time_slots: z.array(z.unknown()).optional()
 });
 
-const agentNotificationSchema = z.object({
-  isRead_new_base_docs_uploaded: z
-    .array(
-      z.object({
-        student_id: z.string().optional(),
-        student_firstname: z.string().optional(),
-        student_lastname: z.string().optional()
-      })
-    )
-    .optional(),
-  isRead_new_survey_updated: z.boolean().optional(),
-  isRead_applications_status_changed: z.boolean().optional(),
-  isRead_new_programs_assigned: z.boolean().optional()
-});
-
 const editorAttributeSchema = z.object({
   can_write_ml: z.boolean().optional(),
   can_write_rl: z.boolean().optional(),
   can_write_cv: z.boolean().optional(),
   can_write_essay: z.boolean().optional(),
   can_do_interview: z.boolean().optional()
-});
-
-const editorNotificationSchema = z.object({
-  isRead_survey_not_complete: z.boolean().optional(),
-  isRead_base_documents_missing: z.boolean().optional(),
-  isRead_base_documents_rejected: z.boolean().optional(),
-  isRead_new_programs_assigned: z.boolean().optional()
 });
 
 /** Shared base user fields (API-safe, no Mongoose types) */
@@ -116,15 +94,13 @@ const userBaseFields = {
 export const AgentWithIdSchema = z.object({
   ...userBaseFields,
   officehours: z.record(officehoursDaySchema).optional(),
-  selfIntroduction: z.string().optional(),
-  agent_notification: agentNotificationSchema.optional()
+  selfIntroduction: z.string().optional()
 });
 export type IAgentWithId = z.infer<typeof AgentWithIdSchema>;
 
 export const EditorWithIdSchema = z.object({
   ...userBaseFields,
   officehours: z.record(officehoursDaySchema).optional(),
-  editor_notification: editorNotificationSchema.optional(),
   attribute: editorAttributeSchema.optional()
 });
 export type IEditorWithId = z.infer<typeof EditorWithIdSchema>;

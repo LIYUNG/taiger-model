@@ -172,33 +172,15 @@ export interface IUserOfficeHoursDay {
   time_slots?: unknown[];
 }
 
-export interface IAgentNotificationItem {
-  student_id?: string;
-  student_firstname?: string;
-  student_lastname?: string;
-}
-
 export interface IAgent extends IUser {
   timezone?: string;
   officehours?: Record<string, IUserOfficeHoursDay>;
   selfIntroduction?: string;
-  agent_notification?: {
-    isRead_new_base_docs_uploaded?: IAgentNotificationItem[];
-    isRead_new_survey_updated?: boolean;
-    isRead_applications_status_changed?: boolean;
-    isRead_new_programs_assigned?: boolean;
-  };
 }
 
 export interface IEditor extends IUser {
   timezone?: string;
   officehours?: Record<string, IUserOfficeHoursDay>;
-  editor_notification?: {
-    isRead_survey_not_complete?: boolean;
-    isRead_base_documents_missing?: boolean;
-    isRead_base_documents_rejected?: boolean;
-    isRead_new_programs_assigned?: boolean;
-  };
   attribute?: {
     can_write_ml?: boolean;
     can_write_rl?: boolean;
@@ -212,10 +194,6 @@ export interface IManager extends IUser {
   agents?: Schema.Types.ObjectId[];
   editors?: Schema.Types.ObjectId[];
   manager_type?: string;
-  manager_notification?: {
-    isRead_new_base_docs_uploaded?: { student_id?: string }[];
-    isRead_new_programs_assigned?: boolean;
-  };
   attribute?: {
     can_write_ml?: boolean;
     can_write_rl?: boolean;
@@ -693,20 +671,6 @@ export const managerSchema = new Schema(
       enum: Object.values(ManagerType),
       default: ManagerType.None
     },
-    manager_notification: {
-      isRead_new_base_docs_uploaded: [
-        {
-          student_id: {
-            type: String,
-            default: ''
-          }
-        }
-      ],
-      isRead_new_programs_assigned: {
-        type: Boolean,
-        default: false
-      }
-    },
     attribute: {
       can_write_ml: {
         type: Boolean,
@@ -772,36 +736,6 @@ export const agentSchema = new Schema(
       type: String,
       default: ''
     },
-    agent_notification: {
-      isRead_new_base_docs_uploaded: [
-        {
-          student_id: {
-            type: String,
-            default: ''
-          },
-          student_firstname: {
-            type: String,
-            default: ''
-          },
-          student_lastname: {
-            type: String,
-            default: ''
-          }
-        }
-      ],
-      isRead_new_survey_updated: {
-        type: Boolean,
-        default: true
-      },
-      isRead_applications_status_changed: {
-        type: Boolean,
-        default: true
-      },
-      isRead_new_programs_assigned: {
-        type: Boolean,
-        default: false
-      }
-    }
   },
   options
 );
@@ -810,24 +744,6 @@ export const editorSchema = new Schema(
   {
     timezone: { type: String, default: '' },
     officehours: officehours,
-    editor_notification: {
-      isRead_survey_not_complete: {
-        type: Boolean,
-        default: false
-      },
-      isRead_base_documents_missing: {
-        type: Boolean,
-        default: false
-      },
-      isRead_base_documents_rejected: {
-        type: Boolean,
-        default: false
-      },
-      isRead_new_programs_assigned: {
-        type: Boolean,
-        default: false
-      }
-    },
     attribute: {
       can_write_ml: {
         type: Boolean,

@@ -52,8 +52,6 @@ export const GetMyStudentThreadsResponseSchema = createApiResponseSchema(
   })
 );
 
-export const GetMyStudentThreadMetricsResponseSchema = createApiResponseSchema(z.unknown());
-
 export const PutThreadFavoriteResponseSchema = createApiResponseSchema(ThreadFavoriteDataSchema);
 
 /**
@@ -269,10 +267,6 @@ export type GetThreadsByStudentResponse = z.infer<typeof GetThreadsByStudentResp
  */
 export type GetMyStudentThreadsResponse = z.infer<typeof GetMyStudentThreadsResponseSchema>;
 
-/** GET /api/document-threads/overview/my-student-metrics */
-export type GetMyStudentThreadMetricsResponse = z.infer<
-  typeof GetMyStudentThreadMetricsResponseSchema
->;
 
 /** PUT /api/document-threads/:documentsthreadId/favorite */
 export type PutThreadFavoriteResponse = z.infer<typeof PutThreadFavoriteResponseSchema>;

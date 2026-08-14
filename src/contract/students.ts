@@ -103,8 +103,9 @@ export const studentsContract = {
     description:
       'The same rows as `/api/students/active/paginated`, grouped so a ' +
       "student's identity appears once rather than on every application " +
-      'line. No `page` / `limit`: an export is the whole filtered set.',
-    query: PaginatedStudentListQuery.omit({ page: true, limit: true }),
+      'line. Takes the same `page` / `limit` as the list: the export is what ' +
+      'the user is looking at, so page 2 at 100 per page exports those 100.',
+    query: PaginatedStudentListQuery,
     // Streamed as an attachment, so a client fetches it through its blob
     // transport rather than `callApi` (which would try to parse a JSON
     // envelope this route never sends).
