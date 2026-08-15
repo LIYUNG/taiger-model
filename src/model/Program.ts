@@ -322,15 +322,15 @@ export interface IProgram {
   uni_assist?: string;
   englishTestHandLater?: boolean;
   toefl?: string;
-  toefl_reading?: number;
-  toefl_listening?: number;
-  toefl_writing?: number;
-  toefl_speaking?: number;
+  toefl_reading?: number | null;
+  toefl_listening?: number | null;
+  toefl_writing?: number | null;
+  toefl_speaking?: number | null;
   ielts?: string;
-  ielts_reading?: number;
-  ielts_listening?: number;
-  ielts_writing?: number;
-  ielts_speaking?: number;
+  ielts_reading?: number | null;
+  ielts_listening?: number | null;
+  ielts_writing?: number | null;
+  ielts_speaking?: number | null;
   germanTestHandLater?: boolean;
   goetheZertifikat?: string;
   testdaf?: string;
@@ -347,9 +347,9 @@ export interface IProgram {
   gre_types?: string[];
   /** Which Subject tests are accepted, where 'Subject' is among `gre_types`. */
   gre_subjects?: string[];
-  gre_verbal?: number;
-  gre_quantitative?: number;
-  gre_analytical_writing?: number;
+  gre_verbal?: number | null;
+  gre_quantitative?: number | null;
+  gre_analytical_writing?: number | null;
   gmat?: string;
   /**
    * Which GMAT editions this program accepts, as `GmatCertificate` values
@@ -358,14 +358,14 @@ export interface IProgram {
    * and replaced Integrated Reasoning with Data Insights.
    */
   gmat_types?: string[];
-  gmat_verbal?: number;
-  gmat_quantitative?: number;
+  gmat_verbal?: number | null;
+  gmat_quantitative?: number | null;
   /** Focus Edition section. */
-  gmat_data_insights?: number;
+  gmat_data_insights?: number | null;
   /** Classic edition section, replaced by Data Insights in Focus. */
-  gmat_integrated_reasoning?: number;
+  gmat_integrated_reasoning?: number | null;
   /** Classic edition section; Focus dropped the essay. */
-  gmat_analytical_writing?: number;
+  gmat_analytical_writing?: number | null;
   ml_required?: string;
   ml_requirements?: string;
   sop_required?: string;

@@ -85,7 +85,7 @@ const userBaseFields = {
   academic_background: UserAcademicBackgroundSchema.optional(),
   lastLoginAt: z.coerce.date().optional(),
   needEditor: z.boolean().optional(),
-  applying_program_count: z.number().optional(),
+  applying_program_count: z.number().nullish(),
   attributes: z.array(UserAttributeSchema).optional(),
   profile: z.array(UserProfileItemSchema).optional(),
   courses: CourseSchema.optional()
@@ -130,7 +130,8 @@ export interface IStudentResponseDef {
   academic_background?: z.infer<typeof UserAcademicBackgroundSchema>;
   lastLoginAt?: Date;
   needEditor?: boolean;
-  applying_program_count?: number;
+  /** Nullable for the same reason the schema is — see models.ts. */
+  applying_program_count?: number | null;
   attributes?: z.infer<typeof UserAttributeSchema>[];
   profile?: z.infer<typeof UserProfileItemSchema>[];
   generaldocs_threads?: z.infer<typeof UserGeneraldocsThreadSchema>[];

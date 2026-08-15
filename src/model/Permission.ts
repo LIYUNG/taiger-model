@@ -3,7 +3,7 @@ import { IUser } from './User';
 
 export interface IPermission {
   user_id?: IUser | Schema.Types.ObjectId | string;
-  taigerAiQuota?: number;
+  taigerAiQuota?: number | null;
   canAssignEditors?: boolean;
   canUseTaiGerAI?: boolean;
   canModifyProgramList?: boolean;

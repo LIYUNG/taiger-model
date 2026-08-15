@@ -5,9 +5,9 @@ import { PROGRAM_SUBJECT_KEYS } from '../model/Program';
 export interface IProgramrequirementProgramCategory {
   program_category?: string;
   category_description?: string;
-  requiredECTS?: number;
+  requiredECTS?: number | null;
   keywordSets?: Schema.Types.ObjectId[];
-  maxScore?: number;
+  maxScore?: number | null;
 }
 
 export interface IProgramrequirement {
@@ -16,25 +16,25 @@ export interface IProgramrequirement {
   attributes?: string[];
   fpso?: string;
   admissionDescription?: string;
-  gpaScoreBoundaryGPA?: number;
-  gpaScore?: number;
-  gpaMinScore?: number;
-  coursesScore?: number;
-  cvScore?: number;
-  mlScore?: number;
-  rlScore?: number;
-  essayScore?: number;
-  gmatScore?: number;
-  greScore?: number;
-  interviewScore?: number;
-  workExperienceScore?: number;
-  testScore?: number;
+  gpaScoreBoundaryGPA?: number | null;
+  gpaScore?: number | null;
+  gpaMinScore?: number | null;
+  coursesScore?: number | null;
+  cvScore?: number | null;
+  mlScore?: number | null;
+  rlScore?: number | null;
+  essayScore?: number | null;
+  gmatScore?: number | null;
+  greScore?: number | null;
+  interviewScore?: number | null;
+  workExperienceScore?: number | null;
+  testScore?: number | null;
   firstRoundConsidered?: string[];
   secondRoundConsidered?: string[];
-  directRejectionScore?: number;
-  directAdmissionScore?: number;
-  directRejectionSecondScore?: number;
-  directAdmissionSecondScore?: number;
+  directRejectionScore?: number | null;
+  directAdmissionScore?: number | null;
+  directRejectionSecondScore?: number | null;
+  directAdmissionSecondScore?: number | null;
 }
 
 export const programRequirementSchema = new Schema<IProgramrequirement>(

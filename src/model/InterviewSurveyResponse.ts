@@ -5,7 +5,7 @@ import { IInterview } from './Interview';
 
 export interface IInterviewSurveyResponseResponse {
   questionId?: string;
-  answer?: number;
+  answer?: number | null;
 }
 
 export interface IInterviewSurveyResponse {

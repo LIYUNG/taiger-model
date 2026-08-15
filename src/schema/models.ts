@@ -1,6 +1,14 @@
 /**
  * Zod schemas for base model data shapes (API-safe, no Mongoose-specific types).
  * Used by serialized.ts and API response schemas.
+ *
+ * Optional numbers here are `.nullish()`, not `.optional()`. These are
+ * persisted document fields, and clearing one in a form stores an explicit
+ * `null` rather than removing the key — that null then goes on the wire as-is
+ * and fails a `number | undefined` schema, taking the whole response with it.
+ * (A cleared `toefl_reading` did exactly that.) Computed aggregates in
+ * `api/` — counts, rates, pagination — stay `.optional()`: nothing can clear
+ * them, so widening those would only push null-handling onto consumers.
  */
 import { z } from 'zod';
 
@@ -63,17 +71,17 @@ export const UserAcademicBackgroundUniversitySchema = z.object({
   attended_university_program: z.string().optional(),
   isGraduated: z.string().optional(),
   expected_grad_date: z.string().optional(),
-  Highest_GPA_Uni: z.number().optional(),
-  Passing_GPA_Uni: z.number().optional(),
-  My_GPA_Uni: z.number().optional(),
+  Highest_GPA_Uni: z.number().nullish(),
+  Passing_GPA_Uni: z.number().nullish(),
+  My_GPA_Uni: z.number().nullish(),
   Has_Exchange_Experience: z.string().optional(),
   isSecondGraduated: z.string().optional(),
   expectedSecondDegreeGradDate: z.string().optional(),
   attendedSecondDegreeUniversity: z.string().optional(),
   attendedSecondDegreeProgram: z.string().optional(),
-  highestSecondDegreeGPA: z.number().optional(),
-  passingSecondDegreeGPA: z.number().optional(),
-  mySecondDegreeGPA: z.number().optional(),
+  highestSecondDegreeGPA: z.number().nullish(),
+  passingSecondDegreeGPA: z.number().nullish(),
+  mySecondDegreeGPA: z.number().nullish(),
   Has_Internship_Experience: z.string().optional(),
   Has_Working_Experience: z.string().optional(),
   updatedAt: z.coerce.date().optional()
@@ -228,15 +236,18 @@ export const ProgramSchema = z.object({
   uni_assist: z.string().optional(),
   englishTestHandLater: z.boolean().optional(),
   toefl: z.string().optional(),
-  toefl_reading: z.number().optional(),
-  toefl_listening: z.number().optional(),
-  toefl_writing: z.number().optional(),
-  toefl_speaking: z.number().optional(),
+  // Nullish, not optional: clearing a section minimum in the program form
+  // stores an explicit null, and that null goes on the wire as-is. Accepting
+  // only number|undefined made every such program fail response validation.
+  toefl_reading: z.number().nullish(),
+  toefl_listening: z.number().nullish(),
+  toefl_writing: z.number().nullish(),
+  toefl_speaking: z.number().nullish(),
   ielts: z.string().optional(),
-  ielts_reading: z.number().optional(),
-  ielts_listening: z.number().optional(),
-  ielts_writing: z.number().optional(),
-  ielts_speaking: z.number().optional(),
+  ielts_reading: z.number().nullish(),
+  ielts_listening: z.number().nullish(),
+  ielts_writing: z.number().nullish(),
+  ielts_speaking: z.number().nullish(),
   germanTestHandLater: z.boolean().optional(),
   goetheZertifikat: z.string().optional(),
   testdaf: z.string().optional(),
@@ -244,16 +255,16 @@ export const ProgramSchema = z.object({
   gre: z.string().optional(),
   gre_types: z.array(z.string()).optional(),
   gre_subjects: z.array(z.string()).optional(),
-  gre_verbal: z.number().optional(),
-  gre_quantitative: z.number().optional(),
-  gre_analytical_writing: z.number().optional(),
+  gre_verbal: z.number().nullish(),
+  gre_quantitative: z.number().nullish(),
+  gre_analytical_writing: z.number().nullish(),
   gmat: z.string().optional(),
   gmat_types: z.array(z.string()).optional(),
-  gmat_verbal: z.number().optional(),
-  gmat_quantitative: z.number().optional(),
-  gmat_data_insights: z.number().optional(),
-  gmat_integrated_reasoning: z.number().optional(),
-  gmat_analytical_writing: z.number().optional(),
+  gmat_verbal: z.number().nullish(),
+  gmat_quantitative: z.number().nullish(),
+  gmat_data_insights: z.number().nullish(),
+  gmat_integrated_reasoning: z.number().nullish(),
+  gmat_analytical_writing: z.number().nullish(),
   ml_required: z.string().optional(),
   ml_requirements: z.string().optional(),
   sop_required: z.string().optional(),
@@ -417,7 +428,7 @@ export type IAllCourseSchema = z.infer<typeof AllCourseSchema>;
 
 export const PermissionSchema = z.object({
   user_id: z.string().optional(),
-  taigerAiQuota: z.number().optional(),
+  taigerAiQuota: z.number().nullish(),
   canAssignEditors: z.boolean().optional(),
   canUseTaiGerAI: z.boolean().optional(),
   canModifyProgramList: z.boolean().optional(),
@@ -446,7 +457,7 @@ export type INoteSchema = z.infer<typeof NoteSchema>;
 
 export const InterviewSurveyResponseResponseSchema = z.object({
   questionId: z.string().optional(),
-  answer: z.number().optional()
+  answer: z.number().nullish()
 });
 export type IInterviewSurveyResponseResponseSchema = z.infer<typeof InterviewSurveyResponseResponseSchema>;
 
@@ -620,9 +631,9 @@ export type IAuditSchema = z.infer<typeof AuditSchema>;
 export const ProgramrequirementProgramCategorySchema = z.object({
   program_category: z.string().optional(),
   category_description: z.string().optional(),
-  requiredECTS: z.number().optional(),
+  requiredECTS: z.number().nullish(),
   keywordSets: z.array(z.string()).optional(),
-  maxScore: z.number().optional()
+  maxScore: z.number().nullish()
 });
 export type IProgramrequirementProgramCategorySchema = z.infer<typeof ProgramrequirementProgramCategorySchema>;
 
@@ -632,24 +643,24 @@ export const ProgramrequirementSchema = z.object({
   attributes: z.array(z.string()).optional(),
   fpso: z.string().optional(),
   admissionDescription: z.string().optional(),
-  gpaScoreBoundaryGPA: z.number().optional(),
-  gpaScore: z.number().optional(),
-  gpaMinScore: z.number().optional(),
-  coursesScore: z.number().optional(),
-  cvScore: z.number().optional(),
-  mlScore: z.number().optional(),
-  rlScore: z.number().optional(),
-  essayScore: z.number().optional(),
-  gmatScore: z.number().optional(),
-  greScore: z.number().optional(),
-  interviewScore: z.number().optional(),
-  workExperienceScore: z.number().optional(),
-  testScore: z.number().optional(),
+  gpaScoreBoundaryGPA: z.number().nullish(),
+  gpaScore: z.number().nullish(),
+  gpaMinScore: z.number().nullish(),
+  coursesScore: z.number().nullish(),
+  cvScore: z.number().nullish(),
+  mlScore: z.number().nullish(),
+  rlScore: z.number().nullish(),
+  essayScore: z.number().nullish(),
+  gmatScore: z.number().nullish(),
+  greScore: z.number().nullish(),
+  interviewScore: z.number().nullish(),
+  workExperienceScore: z.number().nullish(),
+  testScore: z.number().nullish(),
   firstRoundConsidered: z.array(z.string()).optional(),
   secondRoundConsidered: z.array(z.string()).optional(),
-  directRejectionScore: z.number().optional(),
-  directAdmissionScore: z.number().optional(),
-  directRejectionSecondScore: z.number().optional(),
-  directAdmissionSecondScore: z.number().optional()
+  directRejectionScore: z.number().nullish(),
+  directAdmissionScore: z.number().nullish(),
+  directRejectionSecondScore: z.number().nullish(),
+  directAdmissionSecondScore: z.number().nullish()
 });
 export type IProgramrequirementSchema = z.infer<typeof ProgramrequirementSchema>;
