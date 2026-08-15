@@ -96,12 +96,41 @@ export interface IUserAcademicBackgroundLanguage {
   german_score?: string;
   german_test_date?: string;
   gre_isPassed?: string;
+  /**
+   * Which GRE was sat: 'GRE_GENERAL' or 'GRE_SUBJECT'.
+   *
+   * Doubles as the flavour, so there is no separate type field on the student.
+   * It has to be known before `gre_score` means anything — 740 is a normal
+   * Subject score and an impossible General total.
+   */
   gre_certificate?: string;
   gre_score?: string;
+  /**
+   * Which Subject test, where `gre_certificate` is 'GRE_SUBJECT'. The
+   * certificate says it was a Subject test but not which one.
+   */
+  gre_subject?: string;
+  gre_score_verbal?: string;
+  gre_score_quantitative?: string;
+  gre_score_analytical_writing?: string;
   gre_test_date?: string;
   gmat_isPassed?: string;
+  /**
+   * Which GMAT was sat: 'GMAT_FOCUS' or 'GMAT_GENERAL'. As with the GRE this is
+   * also the edition, so there is no separate type field. The editions score
+   * differently — 645 is a good Focus total and impossible on the classic
+   * 200-800 scale — so a total alone cannot be compared against a bar.
+   */
   gmat_certificate?: string;
   gmat_score?: string;
+  gmat_score_verbal?: string;
+  gmat_score_quantitative?: string;
+  /** Focus Edition section. */
+  gmat_score_data_insights?: string;
+  /** Classic edition section, replaced by Data Insights in Focus. */
+  gmat_score_integrated_reasoning?: string;
+  /** Classic edition section; Focus dropped the essay. */
+  gmat_score_analytical_writing?: string;
   gmat_test_date?: string;
   updatedAt?: Date;
 }
@@ -553,6 +582,22 @@ export const userSchema = new Schema(
           type: String,
           default: ''
         },
+        gre_subject: {
+          type: String,
+          default: ''
+        },
+        gre_score_verbal: {
+          type: String,
+          default: ''
+        },
+        gre_score_quantitative: {
+          type: String,
+          default: ''
+        },
+        gre_score_analytical_writing: {
+          type: String,
+          default: ''
+        },
         gre_test_date: {
           type: String,
           default: ''
@@ -566,6 +611,26 @@ export const userSchema = new Schema(
           default: ''
         },
         gmat_score: {
+          type: String,
+          default: ''
+        },
+        gmat_score_verbal: {
+          type: String,
+          default: ''
+        },
+        gmat_score_quantitative: {
+          type: String,
+          default: ''
+        },
+        gmat_score_data_insights: {
+          type: String,
+          default: ''
+        },
+        gmat_score_integrated_reasoning: {
+          type: String,
+          default: ''
+        },
+        gmat_score_analytical_writing: {
           type: String,
           default: ''
         },

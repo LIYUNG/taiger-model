@@ -336,10 +336,36 @@ export interface IProgram {
   testdaf?: string;
   dsh?: string;
   gre?: string;
+  /**
+   * Which GRE flavours this program accepts, as `GreCertificate` values
+   * ('GRE_GENERAL', 'GRE_SUBJECT', or both).
+   *
+   * The same spelling a student's `gre_certificate` uses, so the two compare
+   * without translation. Plural because a department may take either, while an
+   * applicant sat exactly one.
+   */
+  gre_types?: string[];
+  /** Which Subject tests are accepted, where 'Subject' is among `gre_types`. */
+  gre_subjects?: string[];
   gre_verbal?: number;
   gre_quantitative?: number;
   gre_analytical_writing?: number;
   gmat?: string;
+  /**
+   * Which GMAT editions this program accepts, as `GmatCertificate` values
+   * ('GMAT_FOCUS', 'GMAT_GENERAL', or both) — most take both through the
+   * transition. Focus rescaled the total (205-805 against the classic 200-800)
+   * and replaced Integrated Reasoning with Data Insights.
+   */
+  gmat_types?: string[];
+  gmat_verbal?: number;
+  gmat_quantitative?: number;
+  /** Focus Edition section. */
+  gmat_data_insights?: number;
+  /** Classic edition section, replaced by Data Insights in Focus. */
+  gmat_integrated_reasoning?: number;
+  /** Classic edition section; Focus dropped the essay. */
+  gmat_analytical_writing?: number;
   ml_required?: string;
   ml_requirements?: string;
   sop_required?: string;
@@ -477,6 +503,16 @@ export const programModule = {
   gre: {
     type: String
   },
+  gre_types: [
+    {
+      type: String
+    }
+  ],
+  gre_subjects: [
+    {
+      type: String
+    }
+  ],
   gre_verbal: {
     type: Number
   },
@@ -488,6 +524,26 @@ export const programModule = {
   },
   gmat: {
     type: String
+  },
+  gmat_types: [
+    {
+      type: String
+    }
+  ],
+  gmat_verbal: {
+    type: Number
+  },
+  gmat_quantitative: {
+    type: Number
+  },
+  gmat_data_insights: {
+    type: Number
+  },
+  gmat_integrated_reasoning: {
+    type: Number
+  },
+  gmat_analytical_writing: {
+    type: Number
   },
   ml_required: {
     type: String
