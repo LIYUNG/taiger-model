@@ -137,7 +137,7 @@ export const accountContract = {
     params: StudentParams,
     // Partial: the CV Details tab saves one section at a time, and the handler
     // writes only the keys that are present.
-    body: CvProfileDataSchema.partial(),
+    body: CvProfileDataSchema.omit({ identity_defaults: true }).partial(),
     response: CvProfileResponseSchema
   }),
 
